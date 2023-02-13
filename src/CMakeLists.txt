@@ -1,1 +1,1 @@
-target_sources(${PROJECT_NAME}.exe PUBLIC main.cpp)
+target_sources(${PROJECT_NAME} PUBLIC main.cpp)
