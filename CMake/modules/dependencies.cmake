@@ -25,6 +25,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glad)
 
+FetchContent_Declare(
+  boost
+  URL https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.zip
+)
+FetchContent_MakeAvailable(boost)
+
 # fetch Dear ImGui
 FetchContent_Declare(
   imgui
