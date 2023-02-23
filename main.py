@@ -1,10 +1,11 @@
-from pytube import YouTube
-
+from downloader import download_media
 
 def main():
-    yt = YouTube('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-    yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
 
+    download_media('https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        progressive=True,
+        file_extension="mp4"
+    )
 
 if __name__ == '__main__':
     main()
