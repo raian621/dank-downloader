@@ -1,11 +1,7 @@
-from downloader import download_media
+from downloader import download_video, download_audio
 
 def main():
-
-    download_media('https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        progressive=True,
-        file_extension="mp4"
-    )
+    download_video('https://www.youtube.com/shorts/tv2kXFrXucQ', file_extension="mp4")
 
 if __name__ == '__main__':
     main()

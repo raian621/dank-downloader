@@ -1,6 +1,11 @@
 Brotli==1.0.9
 certifi==2022.12.7
+greenlet==2.0.2
 mutagen==1.46.0
 pycryptodomex==3.17
+pysqlite3==0.5.0
+pytube==12.1.2
+SQLAlchemy==2.0.4
+typing_extensions==4.5.0
 websockets==10.4
 yt-dlp==2023.1.6
