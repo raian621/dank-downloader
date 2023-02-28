@@ -2,6 +2,8 @@ from pytube import YouTube
 import moviepy.editor as mp
 import os
 
+from database import *
+
 # initialize the default download directory
 DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")
 print(DOWNLOAD_DIRECTORY)
@@ -14,6 +16,7 @@ def on_progress_callback(stream, chunk, bytes_remaining):
     percent_complete = (total_size - bytes_remaining) / total_size
     progress_line_end = "\r" if percent_complete < 1 else "\n"
     print("Download {:.2f}% complete".format(percent_complete * 100), end=progress_line_end)
+
 
 def get_pytube_streams(
     url: str,
@@ -60,24 +63,56 @@ def get_pytube_streams(
     except Exception as e:
         print(e.with_traceback)
 
-    return streams
+    return (streams, yt.length)
 
-def download_audio(url: str, file_extension=None, file_destination=DOWNLOAD_DIRECTORY):
-    streams = get_pytube_streams(url, file_extension)
+
+def download_video(url: str, file_extension="mp4", resolution=None, fps=None, file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
+    streams, length = get_pytube_streams(url, file_extension=file_extension, resolution=resolution, progressive=True, fps=fps)
+    stream = streams.order_by('resolution').desc().first()
+
+    video_file_path = stream.download(file_destination)
+    if register:
+        user = get_user()
+        if title == None:
+            title = "New Media"
+        if subtitle == None:
+            subtitle = "New Media"
+        videodata = VideoData(stream.resolution, stream.fps)
+        media = Media(length, file_extension, url, video_file_path, title, subtitle)
+        media.videodata = videodata
+        media.user = user
+        media.user_id = user.id
+
+        add_entity(media)
+
+    return video_file_path
+
+
+def download_audio(url: str, file_extension="mp3", file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
+    streams, length = get_pytube_streams(url, file_extension)
     
+    file_path = None
     # if there are no audio streams of the specified file_extension, download
     # mp4 file and convert it into a file with the specified file extension
     if streams == None:
-        video_file_path = download_video(url, file_extension="mp4")
+        video_file_path = download_video(url, file_extension="mp4", register=False)
         video = mp.VideoFileClip(video_file_path)
+        file_path = video_file_path.replace("mp4", file_extension)
         video.audio.write_audiofile(video_file_path.replace("mp4", file_extension))
         os.remove(video_file_path)
-        return
-    
-    streams.download(file_destination)
+    else:
+        file_path = streams.first().download(file_destination)
 
-def download_video(url: str, file_extension=None, resolution=None, fps=None, file_destination=DOWNLOAD_DIRECTORY):
-    streams = get_pytube_streams(url, file_extension=file_extension, resolution=resolution, progressive=True, fps=fps)
-    stream = streams.order_by('resolution').desc().first()
-    print(DOWNLOAD_DIRECTORY)
-    return stream.download(file_destination)
+    if register:
+        user = get_user()
+        if title == None:
+            title = "New Media"
+        if subtitle == None:
+            subtitle = "New Media"
+        print(f"{user}ASDSDASDASDASD\n\n\n\n")
+        media = Media(length, file_extension, url, file_path, title, subtitle, user)
+
+        add_entity(media)
+
+    return file_path
+
