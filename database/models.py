@@ -89,3 +89,17 @@ class VideoData(Base):
         self.fps = fps
         self.media = media
 
+class AudioData(Base):
+    __tablename__ = "audiodata"
+
+    id: Mapped[Integer] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    media_id: Mapped[Integer] = mapped_column(Integer, ForeignKey("media.id"))
+    quality: Mapped[String] = mapped_column(String(20))
+    sample_rate: Mapped[Integer] = mapped_column(Integer)
+
+    def __init__(self, quality : str, sample_rate : int):
+        self.quality = quality
+        self.sample_rate = sample_rate
+
+    def __repr__(self):
+        return f"AudioData {self.quality} {self.sample_rate}"
