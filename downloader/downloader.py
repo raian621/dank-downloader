@@ -61,6 +61,8 @@ def get_pytube_streams(
             adaptive=adaptive,
             is_dash=is_dash
         )
+
+        print(streams)
     except Exception as e:
         print(e.with_traceback)
 
@@ -119,7 +121,7 @@ def download_audio(url: str, file_extension="mp3", file_destination=DOWNLOAD_DIR
                 
             media = Media(length, file_extension, url, video_file_path, title, subtitle, user)
             user.media.append(media)
-            
+
             add_entity(user, session)
 
     return file_path

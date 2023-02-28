@@ -11,8 +11,14 @@ def main():
         print(f"({i + 1}) {extensions[i]}")
 
     extension = extensions[int(input("Please select an extension: ")) - 1]
-    
-    download_audio(url, extension) if is_audio else download_video(url, extension)
+
+    resolution = None
+    if not is_audio:
+        resolution = input("Enter desired resolution (leave blank to automatically choose best resolution): ")
+        if len(resolution) == 0:
+            resolution = None
+
+    download_audio(url, extension) if is_audio else download_video(url, extension, resolution=resolution)
     
 
 if __name__ == '__main__':
