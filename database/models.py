@@ -1,6 +1,7 @@
 from sqlalchemy import String, ForeignKey, Integer, Text, Column, Numeric, Table
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -9,8 +10,6 @@ class User(Base):
 
     id: Mapped[Integer] = mapped_column(Integer, primary_key=True, autoincrement=True)
     username: Mapped[String] = mapped_column(String(30))
-    playlists: Mapped["Playlist"] = relationship("Playlist", backref="user")
-    media: Mapped["Media"] = relationship("Media", backref="user")
 
     def __init__(self, username):
         self.username = username
@@ -36,11 +35,14 @@ class Playlist(Base):
     description: Mapped[Text] = mapped_column(Text)
     media: Mapped["Media"] = relationship("Media", secondary="media_association_table", backref="playlist")
     user_id: Mapped[Integer] = mapped_column(Integer, ForeignKey("users.id"))
+    user: Mapped["User"] = relationship("User", backref="playlists", uselist=True)
 
-    def __init__(self, playlength, name, description):
+    def __init__(self, playlength, name, description, user):
         self.playlength = playlength
         self.name = name
         self.description = description
+        self.user = user
+        self.user_id = user.id
 
     def __repr__(self):
         return f"Playlist {self.name} [{self.playlength}]"
@@ -58,8 +60,9 @@ class Media(Base):
     subtitle: Mapped[String] = mapped_column(String(64))
     videodata: Mapped["VideoData"] = relationship("VideoData", backref="media")
     user_id: Mapped[Integer] = mapped_column(Integer, ForeignKey("users.id"))
+    user: Mapped["User"] = relationship("User", backref="media", uselist=True)
 
-    def __init__(self, playlength, extension, url, filepath, title, subtitle, user=None):
+    def __init__(self, playlength, extension, url, filepath, title, subtitle, user):
         self.playlength = playlength
         self.extension = extension
         self.url = url

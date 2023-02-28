@@ -4,6 +4,7 @@ import os
 
 from database import *
 
+
 # initialize the default download directory
 DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")
 print(DOWNLOAD_DIRECTORY)
@@ -67,23 +68,26 @@ def get_pytube_streams(
 
 
 def download_video(url: str, file_extension="mp4", resolution=None, fps=None, file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
+    
     streams, length = get_pytube_streams(url, file_extension=file_extension, resolution=resolution, progressive=True, fps=fps)
     stream = streams.order_by('resolution').desc().first()
 
     video_file_path = stream.download(file_destination)
     if register:
-        user = get_user()
-        if title == None:
-            title = "New Media"
-        if subtitle == None:
-            subtitle = "New Media"
-        videodata = VideoData(stream.resolution, stream.fps)
-        media = Media(length, file_extension, url, video_file_path, title, subtitle)
-        media.videodata = videodata
-        media.user = user
-        media.user_id = user.id
+        Session = sessionmaker(engine)
+        with Session() as session:
+            user = get_user(session)
+            
+            if title == None:
+                title = "New Media"
+            if subtitle == None:
+                subtitle = "New Media"
 
-        add_entity(media)
+            media = Media(length, file_extension, url, video_file_path, title, subtitle, user)
+            videodata = VideoData(stream.resolution, stream.fps, media)
+            media.videodata = videodata
+            user.media.append(media)
+            add_entity(user, session)
 
     return video_file_path
 
@@ -104,15 +108,19 @@ def download_audio(url: str, file_extension="mp3", file_destination=DOWNLOAD_DIR
         file_path = streams.first().download(file_destination)
 
     if register:
-        user = get_user()
-        if title == None:
-            title = "New Media"
-        if subtitle == None:
-            subtitle = "New Media"
-        print(f"{user}ASDSDASDASDASD\n\n\n\n")
-        media = Media(length, file_extension, url, file_path, title, subtitle, user)
-
-        add_entity(media)
+        Session = sessionmaker(engine)
+        with Session() as session:
+            user = get_user(session)
+            
+            if title == None:
+                title = "New Media"
+            if subtitle == None:
+                subtitle = "New Media"
+                
+            media = Media(length, file_extension, url, video_file_path, title, subtitle, user)
+            user.media.append(media)
+            
+            add_entity(user, session)
 
     return file_path
 

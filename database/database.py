@@ -8,7 +8,7 @@ from .models import *
 engine = create_engine("sqlite+pysqlite:///dank-downloader.db", echo=True)
 Base.metadata.create_all(bind=engine)
 
-def get_user():
+def get_user(session):
     Session = sessionmaker(engine)
     username = None
 
@@ -17,22 +17,17 @@ def get_user():
             username = os.environ[var]
 
     user = None
-    with Session() as session:
-        result = session.query(User).where(User.username.is_(username))
-        print(result)
-        if result.count() == 0:
-            user = User(username)
-            session.add(user)
-        else:
-            user = result.first()
-        session.expunge_all()
+    result = session.query(User).where(User.username.is_(username))
+    print(result)
+    if result.count() == 0:
+        user = User(username)
+        session.add(user)
+    else:
+        user = result.first()
 
     return user
     
 
-def add_entity(entity):
-    Session = sessionmaker(engine)
-
-    with Session() as session:
-        session.add(entity)
-        session.commit()
+def add_entity(entity, session):
+    session.add(entity)
+    session.commit()
