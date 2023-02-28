@@ -9,7 +9,6 @@ engine = create_engine("sqlite+pysqlite:///dank-downloader.db", echo=True)
 Base.metadata.create_all(bind=engine)
 
 def get_user(session):
-    Session = sessionmaker(engine)
     username = None
 
     for var in ("USER", "USERNAME", "LOGNAME"):
@@ -31,3 +30,14 @@ def get_user(session):
 def add_entity(entity, session):
     session.add(entity)
     session.commit()
+
+
+def create_playlist(name, description, session):
+    user = get_user(session)
+    user.playlists.append(Playlist(0, name, description, get_user(session)))
+    add_entity(user, session)
+    session.commit()
+
+def add_media_to_playlist(playlist, media, session):
+    playlist.playlist.append(media)
+    add_entity(playlist, session)
