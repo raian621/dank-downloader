@@ -21,7 +21,7 @@ def main():
             resolution = None
 
     download_audio(url, extension) if is_audio else download_video(url, extension, resolution=resolution)
-    
+
 
 if __name__ == '__main__':
     main()
