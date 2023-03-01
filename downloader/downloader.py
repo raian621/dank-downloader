@@ -1,6 +1,8 @@
 from pytube import YouTube
 import moviepy.editor as mp
+import ffmpeg
 import os
+import re
 
 from database import *
 
@@ -64,17 +66,42 @@ def get_pytube_streams(
 
         print(streams)
     except Exception as e:
-        print(e.with_traceback)
+        print(e)
 
     return (streams, yt.length)
 
 
-def download_video(url: str, file_extension="mp4", resolution=None, fps=None, file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
+def download_video(url: str, file_extension=None, resolution=None, fps=None, file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
     
-    streams, length = get_pytube_streams(url, file_extension=file_extension, resolution=resolution, progressive=True, fps=fps)
-    stream = streams.order_by('resolution').desc().first()
+    streams, length = get_pytube_streams(url, file_extension=file_extension, progressive=False, fps=fps)
 
-    video_file_path = stream.download(file_destination)
+    video_stream = streams.filter(resolution=resolution).desc().first()
+    audio_stream = streams.filter(only_audio=True).order_by('bitrate').desc().first()
+
+    print(video_stream)
+    print(audio_stream)
+
+    if file_extension == None:
+        ext = re.findall("\.(.*)", video_file_path)
+        if ext:
+            file_extension = ext[0]
+
+    video_file_path = video_stream.download(file_destination)
+    audio_file_path = None
+    if audio_stream:
+        audio_file_path = audio_stream.download(file_destination,
+                video_file_path.replace(f".{file_extension}", f"_audio.mp4"))
+        video_file_path_old = video_file_path
+        # combine video and audio files.
+        # I swear this was the only way to get HD video
+        video_file_path = video_file_path.replace(f".{file_extension}", f"_video.mp4")
+        os.rename(video_file_path_old, video_file_path)
+        video = ffmpeg.input(video_file_path)
+        audio = ffmpeg.input(audio_file_path)
+        ffmpeg.output(video, audio, video_file_path_old).run()
+        os.remove(audio_file_path)
+        os.remove(video_file_path)
+
     if register:
         Session = sessionmaker(engine)
         with Session() as session:
@@ -86,7 +113,7 @@ def download_video(url: str, file_extension="mp4", resolution=None, fps=None, fi
                 subtitle = "New Media"
 
             media = Media(length, file_extension, url, video_file_path, title, subtitle, user)
-            videodata = VideoData(stream.resolution, stream.fps, media)
+            videodata = VideoData(video_stream.resolution, video_stream.fps, media)
             media.videodata = videodata
             user.media.append(media)
             add_entity(user, session)
@@ -94,7 +121,7 @@ def download_video(url: str, file_extension="mp4", resolution=None, fps=None, fi
     return video_file_path
 
 
-def download_audio(url: str, file_extension="mp3", file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
+def download_audio(url: str, file_extension="mp4", file_destination=DOWNLOAD_DIRECTORY, register=True, title=None, subtitle=None):
     streams, length = get_pytube_streams(url, file_extension)
     
     file_path = None

@@ -1,7 +1,6 @@
 from sqlalchemy import String, ForeignKey, Integer, Text, Column, Numeric, Table
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 
-
 class Base(DeclarativeBase):
     pass
 

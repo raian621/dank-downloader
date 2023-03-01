@@ -4,13 +4,15 @@ def main():
     url = input("Please enter a video URL from YouTube: ")
     is_audio = input("Audio download [A] or video download [V]: ").upper() == "A"
     audio_extensions = ["mp3", "wav"]
-    video_extensions = ["mp4"]
+    video_extensions = ["mp4", "no preference"]
 
     extensions = audio_extensions if is_audio else video_extensions
     for i in range(len(extensions)):
         print(f"({i + 1}) {extensions[i]}")
 
     extension = extensions[int(input("Please select an extension: ")) - 1]
+    if extension == "no preference":
+        extension = None
 
     resolution = None
     if not is_audio:
