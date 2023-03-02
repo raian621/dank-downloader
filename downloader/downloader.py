@@ -22,8 +22,18 @@ def on_progress_callback(stream, chunk, bytes_remaining):
     print("Download {:.2f}% complete".format(percent_complete * 100), end=progress_line_end)
 
 
-def download_stream(stream, video_file_path):
-    stream.download(filename=video_file_path)
+def download_stream(stream, file_path):
+    """
+    Downloads a stream to the given file path.
+
+    Used as a target for threads.
+    ---------------------------------------------------------------
+    
+    params:
+        stream: the stream to download
+        file_path: the path to save the media at.
+    """
+    stream.download(filename=file_path)
 
 
 def get_pytube_streams(
@@ -76,21 +86,41 @@ def get_pytube_streams(
 
 def download_video(
         url: str, 
-        file_extension=None, 
-        resolution=None, 
-        fps=None,
-        file_destination=DOWNLOAD_DIRECTORY,
-        register=True,
-        title=None,
-        subtitle=None
-):
+        file_extension:str|None=None, 
+        resolution:str|None=None, 
+        fps:float|None=None,
+        file_destination:str=DOWNLOAD_DIRECTORY,
+        register:bool=True,
+        title:str|None=None,
+        subtitle:str|None=None
+) -> str:
+    """
+    Downloads a video with audio from the given url.
+
+    In order to support HD resolution, we have to download video and
+    audio streams seperately and then combine them with ffmpeg.
+    ---------------------------------------------------------------
+
+    params:
+        url: the url to download the media from
+        file_extension: the desired file extension for the media
+        resolution: the desired video resolution for the media
+        fps: the frames per second for the media
+        file_destination: the folder in which the media will download
+            to
+        register: if True, the media is registered in the database, 
+            if False, the media is not registered in the database
+        title: the title to register the media as in the database
+        subtitle: the subtitle to register the media as in the 
+            database
+    returns:
+        The path to the downloaded media
+    """
+
     streams, length = get_pytube_streams(url, file_extension=file_extension, fps=fps)
 
     video_stream = streams.filter(only_video=True, resolution=resolution).desc().first()
     audio_stream = streams.filter(only_audio=True).order_by('bitrate').desc().first()
-
-    print(video_stream)
-    print(audio_stream)
 
     if file_extension == None:
         ext = re.findall("\.(.*)", video_file_path)
@@ -150,12 +180,30 @@ def download_video(
 
 def download_audio(
         url: str, 
-        file_extension="mp3", 
-        file_destination=DOWNLOAD_DIRECTORY,
-        register=True,
-        title=None,
-        subtitle=None
-):
+        file_extension:str="mp3", 
+        file_destination:str=DOWNLOAD_DIRECTORY,
+        register:bool=True,
+        title:str|None=None,
+        subtitle:str|None=None
+) -> str:
+    """
+    Downloads audio from the given url.
+    ---------------------------------------------------------------
+
+    params:
+        url: the url to download the media from
+        file_extension: the desired file extension for the media
+        file_destination: the folder in which the media will download
+            to
+        register: if True, the media is registered in the database, 
+            if False, the media is not registered in the database
+        title: the title to register the media as in the database
+        subtitle: the subtitle to register the media as in the 
+            database
+    returns:
+        The path to the downloaded media
+    """
+
     streams, length = get_pytube_streams(url, file_extension)
     
     file_path = None
