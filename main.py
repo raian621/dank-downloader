@@ -1,10 +1,11 @@
 from downloader import download_video, download_audio
+from downloader.supported_files import supported_file_formats as sff
 
 def main():
     url = input("Please enter a video URL from YouTube: ")
     is_audio = input("Audio download [A] or video download [V]: ").upper() == "A"
-    audio_extensions = ["mp3", "wav"]
-    video_extensions = ["mp4", "no preference"]
+    audio_extensions = [*sff['audio'], 'no preference']
+    video_extensions = [*sff['video'], "no preference"]
 
     extensions = audio_extensions if is_audio else video_extensions
     for i in range(len(extensions)):

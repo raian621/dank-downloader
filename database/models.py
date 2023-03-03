@@ -32,7 +32,7 @@ class Playlist(Base):
     playlength: Mapped[Integer] = mapped_column(Integer)
     name: Mapped[String] = mapped_column(String(30))
     description: Mapped[Text] = mapped_column(Text)
-    media: Mapped["Media"] = relationship("Media", secondary="media_association_table", backref="playlist")
+    media: Mapped["Media"] = relationship("Media", secondary="media_association_table", backref="playlist", uselist=True)
     user_id: Mapped[Integer] = mapped_column(Integer, ForeignKey("users.id"))
     user: Mapped["User"] = relationship("User", backref="playlists", uselist=True)
 
@@ -87,6 +87,7 @@ class VideoData(Base):
         self.resolution = resolution
         self.fps = fps
         self.media = media
+
 
 class AudioData(Base):
     __tablename__ = "audiodata"
