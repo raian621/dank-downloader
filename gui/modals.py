@@ -1,15 +1,4 @@
-# this is not connected to main as of now
-
-# TO DO
-# Add functionality to the buttons
-# Make scrolling areas
-# Add downloading functionality
-
-# IMPORTANT READ BEFORE EDITING
-# the keys to the buttons are in the format -example_button- keep this consistant
-# all images go into the assets folder access it with ./assets
-# limit the use of whitespace to make text not as long in the window layout
-
+# contains the modals used for the creation of each window
 
 import PySimpleGUI as sg
 
@@ -19,10 +8,12 @@ doge_image = './assets/dankdownloader.ico'
 download_image = './assets/download64x64.png'
 plus_image = './assets/plus64x64.png'
 
-# this is a placeholder and can be changed inside the window
-sg.theme('DarkBlue1')
+# IMPORTANT READ BEFORE EDITING
+# the keys to the buttons are in the format -example_button- keep this consistant
+# all images go into the assets folder access it with ./assets
+# limit the use of whitespace to make text not as long in the window layout
 
-def create_main_window():
+def main_window_modal():
     # this is what appears inside the window that is created
 
                 # playlist area
@@ -36,13 +27,3 @@ def create_main_window():
 
     window = sg.Window('Dank Downloader', layout, icon=doge_image, size=(900,750))
     return window
-
-window = create_main_window()
-
-while True:
-    event, values = window.read()
-    if event == sg.WIN_CLOSED:
-        break
-    print('You clicked a button')
-
-window.close()
