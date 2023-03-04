@@ -34,7 +34,10 @@ def download_stream(stream, file_path):
         stream: the stream to download
         file_path: the path to save the media at.
     """
-    stream.download(filename=file_path)
+    try:
+        stream.download(filename=file_path)
+    except Exception as e:
+        print(e)
 
 
 def get_pytube_streams(
@@ -148,6 +151,9 @@ def download_video(
         audio_thread.start()
         video_thread.join()
         audio_thread.join()
+
+        if not os.path.isfile(video_file_path) or not os.path.isfile(audio_file_path):
+            return None
 
         # combine video and audio files.
         # I swear this was the only way to get HD video
