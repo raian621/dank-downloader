@@ -31,7 +31,7 @@ def main_window_modal():
 def media_download_modal():
 
     layout = [  [sg.Text('Copy and Paste the URL to Download', font='Roboto 12', text_color='#A7E5FF')],
-                [sg.InputText()],
+                [sg.InputText(key='-url-'), sg.Combo(['Audio', 'Video'], default_value='Video', key='-format-')],
                 [sg.Text('Import Config Settings (Optional)', font='Roboto 12', text_color='#A7E5FF')],
                 [sg.Input(), sg.FileBrowse(button_color=('#A7E5FF', sg.theme_background_color()))],
                 [sg.Button('Next', key='-url_page_next-', button_color=('#A7E5FF', sg.theme_background_color()))]  ]
@@ -39,14 +39,22 @@ def media_download_modal():
     window = sg.Window('Download Media', layout, icon=doge_image, size=(420,160))
     return window
 
-def media_options_modal():
+def media_video_modal():
 
-    layout = [  [sg.Text('Select Format', font='Roboto 12', text_color='#A7E5FF')], 
-                [sg.Combo(['Audio', 'Video'], default_value='Video', key='-format-')],
-                [sg.Text('Select Extension', font='Roboto 12', text_color='#A7E5FF')],
-                [sg.Combo(['No Preference', 'MP4', 'WEBM'], default_value='No Preference', key='-extension-')],
+    layout = [  [sg.Text('Select Format', font='Roboto 12', text_color='#A7E5FF')],
+                [sg.Combo(['mp4', 'webm', 'no preference'], default_value='mp4', key='-format-')],
                 [sg.Text('Select Quality', font='Roboto 12', text_color='#A7E5FF')], 
-                [sg.Combo(['1080p', '720p', '480p', '360p', '240p', '144p'], default_value='1080p', key='-quality-')]   ]
+                [sg.Combo(['1080p', '720p', '480p', '360p', '240p', '144p'], default_value='1080p', key='-quality-')],
+                [sg.Button('Download', key='-options_video_download-', button_color=('#A7E5FF', sg.theme_background_color()))]   ]
 
-    window = sg.Window('Download Media', layout, icon=doge_image, size=(420,200))
+    window = sg.Window('Download Media', layout, icon=doge_image, size=(420,160))
+    return window
+
+def media_audio_modal():
+
+    layout = [  [sg.Text('Select Format', font='Roboto 12', text_color='#A7E5FF')],
+                [sg.Combo(['mp3', 'wav', 'no preference'], default_value='mp3', key='-format-')],
+                [sg.Button('Download', key='-options_video_download-', button_color=('#A7E5FF', sg.theme_background_color()))]   ]
+
+    window = sg.Window('Download Media', layout, icon=doge_image, size=(420,120))
     return window

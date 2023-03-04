@@ -3,23 +3,46 @@
 # this is not connected to main as of now
 
 # TO DO
-# Add functionality to the buttons
+# Add functionality to the buttons (somewhat done)
 # Make scrolling areas
 # Add downloading functionality
 
 import PySimpleGUI as sg
-import modals as modal
+import gui.modals as modal
+from downloader import download_video, download_audio
 
-def create_media_options_window(videoURL):
+def create_video_options_window(videoURL, fileType):
     url = videoURL
-    window = modal.media_options_modal()
-    while True:
-        event, values = window.read()
-        if event == sg.WIN_CLOSED:
-            break
-        elif event == '-options_page_download-':
-            break
-    window.close()
+
+    if fileType == 'Video':
+        window = modal.media_video_modal()
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED:
+                break
+            elif event == '-options_video_download-':
+                format = values['-format-']
+                quality = values['-quality-']
+                if format == 'no preference':
+                    format = None
+                print(url, format, quality)
+                download_video(url, format, quality)
+                break
+        window.close()
+    else:
+        window = modal.media_audio_modal()
+        while True:
+            event, values = window.read()
+            if event == sg.WIN_CLOSED:
+                break
+            elif event == '-options_video_download-':
+                format = values['-format-']
+                if format == 'no preference':
+                    format = None
+                print(url, format)
+                download_audio(url, format)
+                break
+        window.close()
 
 # creates the download media window
 def create_media_download_window():
@@ -29,11 +52,10 @@ def create_media_download_window():
          if event == sg.WIN_CLOSED:
             break
          elif event == '-url_page_next-':
-             url = values[0]
+             url = values['-url-']
+             fileType = values['-format-']
              window.close()
-             print(url)
-             create_media_options_window(url)
-             break
+             create_video_options_window(url, fileType)
     window.close()
 
 # creates the main window
@@ -54,5 +76,3 @@ def create_main_window():
            create_media_download_window()
     
     window.close()
-
-create_main_window()

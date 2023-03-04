@@ -1,7 +1,11 @@
 from downloader import download_video, download_audio
 from downloader.supported_files import supported_file_formats as sff
+from gui import create_main_window
 
 def main():
+    # create_main_window()
+
+    
     url = input("Please enter a video URL from YouTube: ")
     is_audio = input("Audio download [A] or video download [V]: ").upper() == "A"
     audio_extensions = [*sff['audio'], 'no preference']
@@ -22,7 +26,6 @@ def main():
             resolution = None
 
     download_audio(url, extension) if is_audio else download_video(url, extension, resolution=resolution)
-
-
+    
 if __name__ == '__main__':
     main()
