@@ -17,7 +17,7 @@ def create_video_options_window(videoURL, fileType):
     downloader.get_streams(url)
 
     if fileType == 'Video':
-        window = modal.media_video_modal()
+        window = modal.media_video_modal(downloader.get_resolutions())
         while True:
             event, values = window.read()
             if event == sg.WIN_CLOSED:

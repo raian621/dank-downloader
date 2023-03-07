@@ -39,12 +39,12 @@ def media_download_modal():
     window = sg.Window('Download Media', layout, icon=doge_image, size=(420,160))
     return window
 
-def media_video_modal():
+def media_video_modal(resolutions):
 
     layout = [  [sg.Text('Select Format', font='Roboto 12', text_color='#A7E5FF')],
                 [sg.Combo(['mp4', 'webm', 'no preference'], default_value='mp4', key='-format-')],
                 [sg.Text('Select Quality', font='Roboto 12', text_color='#A7E5FF')], 
-                [sg.Combo(['1080p', '720p', '480p', '360p', '240p', '144p'], default_value='1080p', key='-quality-')],
+                [sg.Combo(resolutions, default_value=resolutions[0], key='-quality-')],
                 [sg.Button('Download', key='-options_video_download-', button_color=('#A7E5FF', sg.theme_background_color()))]   ]
 
     window = sg.Window('Download Media', layout, icon=doge_image, size=(420,160))
