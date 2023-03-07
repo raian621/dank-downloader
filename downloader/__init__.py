@@ -121,10 +121,10 @@ class Downloader:
         save_results=True,
         use_existing=True
     ):
-        if use_existing and self.streams:
-            return self.streams
-        
         yt = YouTube(url)
+        if use_existing and self.streams:
+            return (self.streams, yt.length)
+        
         yt.register_on_progress_callback(on_progress_callback)
         streams = None
 

@@ -9,10 +9,12 @@
 
 import PySimpleGUI as sg
 import gui.modals as modal
-from downloader import download_video, download_audio
+from downloader import Downloader
 
 def create_video_options_window(videoURL, fileType):
     url = videoURL
+    downloader = Downloader()
+    downloader.get_streams(url)
 
     if fileType == 'Video':
         window = modal.media_video_modal()
@@ -26,7 +28,7 @@ def create_video_options_window(videoURL, fileType):
                 if format == 'no preference':
                     format = None
                 print(url, format, quality)
-                download_video(url, format, quality)
+                downloader.download_video(url, format, quality)
                 break
         window.close()
     else:
@@ -40,7 +42,7 @@ def create_video_options_window(videoURL, fileType):
                 if format == 'no preference':
                     format = None
                 print(url, format)
-                download_audio(url, format)
+                downloader.download_audio(url, format)
                 break
         window.close()
 
