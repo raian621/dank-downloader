@@ -57,3 +57,34 @@ def create_playlist(name: str, description: str, session: Session):
     session.add(user)
 
     return playlist
+
+def media_exists(
+    playlength:int,
+    extension:str,
+    url:str,
+    filepath:str,
+    title:str,
+    subtitle:str,
+    videodata:VideoData|None=None
+) -> bool :
+    Session = sessionmaker(bind=engine)
+    media_exists = False
+    with Session() as session:
+        result = session.query(Media).where(
+            Media.playlength==playlength,
+            Media.extension==extension,
+            Media.url==url,
+            Media.filepath==filepath,
+            Media.title==title,
+            Media.subtitle==subtitle
+        )
+        print("RESULT:", result)
+        if (videodata and result.first()):
+            result = result.where(
+                Media.videodata.fps==videodata.fps,
+                Media.videodata.resolution==videodata.resolution
+            )
+        if (result.first()):
+            media_exists = True
+
+    return media_exists

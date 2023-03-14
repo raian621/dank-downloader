@@ -51,7 +51,7 @@ class Media(Base):
     __tablename__ = "media"
 
     id: Mapped[Integer] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    playlength: Mapped[String] = mapped_column(String(10))
+    playlength: Mapped[Integer] = mapped_column(Integer)
     extension: Mapped[String] = mapped_column(String(10))
     url: Mapped[String] = mapped_column(String(256))
     filepath: Mapped[String] = mapped_column(String(256))
@@ -61,7 +61,7 @@ class Media(Base):
     user_id: Mapped[Integer] = mapped_column(Integer, ForeignKey("users.id"))
     user: Mapped["User"] = relationship("User", backref="media", uselist=True)
 
-    def __init__(self, playlength, extension, url, filepath, title, subtitle, user):
+    def __init__(self, playlength, extension, url, filepath, title, subtitle, user, videodata=None):
         self.playlength = playlength
         self.extension = extension
         self.url = url
@@ -70,6 +70,7 @@ class Media(Base):
         self.subtitle = subtitle
         self.user = user
         self.user_id = user.id
+        self.videodata = videodata
 
     def __repr__(self):
         return f"Media {self.title}"
@@ -83,7 +84,7 @@ class VideoData(Base):
     resolution: Mapped[String] = mapped_column(String(10))
     fps: Mapped[Numeric] = mapped_column(Numeric)
 
-    def __init__(self, resolution, fps, media):
+    def __init__(self, resolution, fps, media=None):
         self.resolution = resolution
         self.fps = fps
         self.media = media
