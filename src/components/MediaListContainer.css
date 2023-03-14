@@ -1,0 +1,9 @@
+.media-list-container {
+  background-color: var(--primary-4);
+  padding: 20px;
+  overflow: auto;
+  max-height: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+}
