@@ -6,16 +6,31 @@ Dank Memers
 - Joshua Turcotte
 - Cade Howard
 
-### To install requirements:
+### To install python requirements:
 
 ```sh
 pip install -r requirements.txt
 ```
 
-### To launch the program:
+### To launch the backend:
 
 ```sh
 python main.py
+```
+
+### To install JavaScript requirements:
+
+```sh
+npm i
+```
+
+## Setup npm on Windows:
+https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl
+
+### To start JavaScript UI
+
+```sh
+npm start
 ```
 
 ## Example Playlist Configuration File
