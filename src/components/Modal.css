@@ -1,0 +1,21 @@
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #00000033;
+  backdrop-filter: blur(2px);
+  z-index: 0;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 80%;
+  background-color: var(--primary-3);
+  backdrop-filter: blur(2px);
+  transform: translate(10%, 10%)
+}

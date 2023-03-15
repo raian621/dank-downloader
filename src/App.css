@@ -14,9 +14,33 @@
   flex-direction: column;
 }
 
+.list-area-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.list-area-heading button {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  height: 2.5em;
+  width: auto;
+}
+
+.list-area-heading img {
+  height: 100%;  
+}
+
 .media-area {
   display: flex;
   flex-direction: column;
   height: 100vh;
   max-height: 100vh;
+}
+
+.table-wrapper {
+  background-color: var(--primary-4);
+  padding: 20px;
 }

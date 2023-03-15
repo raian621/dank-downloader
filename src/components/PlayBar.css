@@ -1,0 +1,13 @@
+.play-bar {
+  display: flex;
+  gap: 5px;
+  margin-top: auto;
+  padding: 10px;
+  background-color: var(--primary-4);
+}
+
+.play-bar svg {
+  cursor: pointer;
+  width: 1.5em;
+  height: 1.5em;
+}

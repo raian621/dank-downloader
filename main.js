@@ -4,9 +4,11 @@ const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 
 function createWindow() {
+  console.log(`${__dirname}/public/dankdownloader.ico`)
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: './public/icon.png',
     webPreferences: {
       nodeIntegration: true,
     },

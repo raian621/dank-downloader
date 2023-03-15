@@ -1,0 +1,28 @@
+.row.item {
+  color: white;
+  padding: 5px;
+  margin: 5px;
+  width: 100%;
+}
+
+.row.item * {
+  padding: 5px;
+}
+
+.row.head {
+  color: white;
+  background-color: var(--primary-3);
+  padding: 5px;
+  width: 100%;
+  text-align: left;
+  border:none;
+}
+.row td, th {
+  padding: 5px;
+  margin: 5px;
+}
+
+.row.head th {
+  margin:0;
+  border: none;
+}
