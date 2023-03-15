@@ -163,4 +163,4 @@ cython_debug/
 *.mp3
 *.db
 
-node_modules
+node_modules/**/*
