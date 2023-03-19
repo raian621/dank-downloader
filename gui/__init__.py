@@ -9,11 +9,11 @@
 
 import PySimpleGUI as sg
 import gui.modals as modal
-from downloader import MediaDownloader
+from downloader import MediaManager
 
 def create_video_options_window(videoURL, fileType):
     url = videoURL
-    downloader = MediaDownloader(url)
+    downloader = MediaManager(url)
 
     if fileType == 'Video':
         window = modal.media_video_modal(downloader.get_resolutions())
@@ -31,7 +31,7 @@ def create_video_options_window(videoURL, fileType):
                 break
         window.close()
     else:
-        window = modal.media_audio_modal()
+        window = modal.media_audio_modal(downloader.get_formats())
         while True:
             event, values = window.read()
             if event == sg.WIN_CLOSED:

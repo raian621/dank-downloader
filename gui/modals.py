@@ -50,10 +50,10 @@ def media_video_modal(resolutions):
     window = sg.Window('Download Media', layout, icon=doge_image, size=(420,160))
     return window
 
-def media_audio_modal():
+def media_audio_modal(formats):
 
     layout = [  [sg.Text('Select Format', font='Roboto 12', text_color='#A7E5FF')],
-                [sg.Combo(['mp3', 'wav', 'no preference'], default_value='mp3', key='-format-')],
+                [sg.Combo([*formats, 'no preference'], default_value=formats[0], key='-format-')],
                 [sg.Button('Download', key='-options_video_download-', button_color=('#A7E5FF', sg.theme_background_color()))]   ]
 
     window = sg.Window('Download Media', layout, icon=doge_image, size=(420,120))

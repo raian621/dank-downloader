@@ -9,7 +9,8 @@ from database import *
 from downloader.configuration import ConfigValMissingError, check_configuration
 from downloader.supported_files import *
 
-from downloader.media_downloader import *
+from downloader.media_downloader import MediaDownloader
+from downloader.media_manager import MediaManager
 
 # # initialize the default download directory
 # DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")

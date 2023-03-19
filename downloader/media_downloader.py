@@ -9,8 +9,9 @@ class MediaDownloader:
     self.url = url
     self.yt = YouTube(url)
     self.playlength = self.yt.length
-    self.streams = None
-    self.length = None
+    self.streams, self.length, self.formats, self.bitrates = \
+      (None, None, None, None)
+
 
   def get_streams(
       self,
@@ -75,6 +76,9 @@ class MediaDownloader:
 
   def get_bitrates(self):
     if self.streams == None:
+      self.get_streams()
+    # if the downloader still can't get any streams, return none
+    if self.streams == None:
       return None
 
     if self.bitrates == None:
@@ -90,6 +94,9 @@ class MediaDownloader:
 
 
   def get_formats(self):
+    if self.streams == None:
+      self.get_streams()
+    # if the downloader still can't get any streams, return none
     if self.streams == None:
       return None
 
@@ -145,7 +152,7 @@ class MediaDownloader:
     if resolution == None:
       resolution = video_stream.resolution
     if fps == None:
-      fps = video_stream.resolution
+      fps = video_stream.fps
 
     title = video_stream.title
     file_path = os.path.join(file_destination, f"{title}_{resolution}_{fps}.{file_extension}")
@@ -217,9 +224,9 @@ class MediaDownloader:
       in the database.
     """
 
-    # TODO: add code to accept unavailable file types; basically try to
-    # just download an available format like mp4 and convert it to the
-    # requested file type at the end of the method
+    # TODO: add code to accept supported, but unavailable file types; 
+    # basically try to just download an available format like mp4 
+    # and convert it to the requested file type at the end of the method
 
     if self.streams == None:
       self.get_streams
@@ -228,7 +235,7 @@ class MediaDownloader:
     if stream == None:
       return None
     
-    file_path = os.path.join(DOWNLOAD_DIRECTORY, f"{stream.title}_{stream.bitrate}.{file_extension}")
+    file_path = os.path.join(file_destination, f"{stream.title}_{stream.bitrate}.{file_extension}")
     download_stream(stream, file_path)
 
     return {
