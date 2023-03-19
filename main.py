@@ -1,5 +1,3 @@
-from downloader import Downloader
-from downloader.supported_files import supported_file_formats as sff
 from gui import create_main_window
 
 def main():
