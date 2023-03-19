@@ -60,6 +60,7 @@ class Media(Base):
     videodata: Mapped["VideoData"] = relationship("VideoData", backref="media")
     user_id: Mapped[Integer] = mapped_column(Integer, ForeignKey("users.id"))
     user: Mapped["User"] = relationship("User", backref="media", uselist=True)
+    media_hash: Mapped[String] = mapped_column(String(64))
 
     def __init__(self, playlength, extension, url, filepath, title, subtitle, user, videodata=None):
         self.playlength = playlength

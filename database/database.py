@@ -8,6 +8,10 @@ from .models import *
 engine = create_engine("sqlite+pysqlite:///dank-downloader.db", echo=True)
 Base.metadata.create_all(bind=engine)
 
+def make_session():
+    return sessionmaker(bind=engine)()
+
+
 def get_user(session: Session) -> User:
     """
     Gets a User object for the current user from database.

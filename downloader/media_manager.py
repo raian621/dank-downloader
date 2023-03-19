@@ -1,5 +1,7 @@
 from .media_downloader import MediaDownloader
-from .util import DOWNLOAD_DIRECTORY 
+from .util import DOWNLOAD_DIRECTORY, create_media_hash, add_media_to_db
+from database import make_session, get_user
+import os
 
 class MediaManager(MediaDownloader):
   def __init__(self, url):
@@ -15,12 +17,18 @@ class MediaManager(MediaDownloader):
       title:str|None="New Media",
       subtitle:str|None="Subtitle"
   ):
-    super().download_video(
+    result = super().download_video(
       file_extension=file_extension,
       resolution=resolution,
       fps=fps,
       file_destination=file_destination
     )
+
+    result["title"] = title
+    result["subtitle"] = subtitle
+
+    if result:
+      add_media_to_db(result, is_video=True)
 
   
   def download_audio(
@@ -30,7 +38,13 @@ class MediaManager(MediaDownloader):
       title:str|None="New Media",
       subtitle:str|None="Subtitle"
   ):
-    super().download_audio(
+    result = super().download_audio(
       file_extension=file_extension,
       file_destination=file_destination
     )
+
+    result["title"] = title
+    result["subtitle"] = subtitle
+
+    if result:
+      add_media_to_db(result, is_video=False)

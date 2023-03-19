@@ -8,9 +8,9 @@ class MediaDownloader:
   def __init__(self, url):
     self.url = url
     self.yt = YouTube(url)
-    self.playlength = self.yt.length
-    self.streams, self.length, self.formats, self.bitrates = \
-      (None, None, None, None)
+    self.length = self.yt.length
+    self.streams, self.formats, self.bitrates = \
+      (None, None, None)
 
 
   def get_streams(
@@ -197,14 +197,12 @@ class MediaDownloader:
       return None
 
     return {
-      "playlength": self.playlength,
+      "playlength": self.length,
       "extension": file_extension,
       "url": self.url,
       "filepath": file_path,
-      "videodata": {
-        "resolution": resolution,
-        "fps": fps
-      }
+      "resolution": resolution,
+      "fps": fps
     }
 
 
@@ -239,7 +237,7 @@ class MediaDownloader:
     download_stream(stream, file_path)
 
     return {
-      "playlength": self.playlength,
+      "playlength": self.length,
       "extension": file_extension,
       "url": self.url,
       "filepath": file_path,
