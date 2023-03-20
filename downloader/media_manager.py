@@ -14,8 +14,8 @@ class MediaManager(MediaDownloader):
       resolution:str|None=None,
       fps:float|None=None,
       file_destination:str=DOWNLOAD_DIRECTORY,
-      title:str|None="New Media",
-      subtitle:str|None="Subtitle"
+      title:str|None=None,
+      subtitle:str|None=""
   ):
     result = super().download_video(
       file_extension=file_extension,
@@ -23,6 +23,9 @@ class MediaManager(MediaDownloader):
       fps=fps,
       file_destination=file_destination
     )
+
+    if title == None:
+      title = self.yt.title
 
     result["title"] = title
     result["subtitle"] = subtitle
@@ -35,13 +38,16 @@ class MediaManager(MediaDownloader):
       self,
       file_extension:str="mp4",
       file_destination:str=DOWNLOAD_DIRECTORY,
-      title:str|None="New Media",
-      subtitle:str|None="Subtitle"
+      title:str|None=None,
+      subtitle:str|None=""
   ):
     result = super().download_audio(
       file_extension=file_extension,
       file_destination=file_destination
     )
+
+    if title == None: 
+      title = self.yt.title
 
     result["title"] = title
     result["subtitle"] = subtitle
