@@ -1,7 +1,7 @@
-from gui import create_main_window
+from gui import show_main_window
 
 def main():
-    create_main_window()
+    show_main_window()
     
     
     # url = input("Please enter a video URL from YouTube: ")
