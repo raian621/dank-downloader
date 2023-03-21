@@ -5,12 +5,12 @@ import os
 import re
 from threading import Thread
 
-from database import *
-from downloader.configuration import ConfigValMissingError, check_configuration
-from downloader.supported_files import *
+from .configuration import ConfigValMissingError, check_configuration
+from .supported_files import *
 
-from downloader.media_downloader import MediaDownloader
-from downloader.media_manager import MediaManager
+from .media_downloader import MediaDownloader
+from .media_manager import MediaManager
+from .media_download_info import MediaDownloadInfo
 
 # # initialize the default download directory
 # DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")
