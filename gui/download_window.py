@@ -43,10 +43,12 @@ class VideoFormWindow(QWidget):
     flo.addRow(submit)
     self.setLayout(flo)
 
+
   def submit(self):
     self.file_extension = self.extension.currentText()
     self.video_resolution = self.resolution.currentText()
     self.submitForm()
+
 
 class AudioFormWindow(QWidget):
   def __init__(self, extensions, parent=None):
@@ -103,8 +105,3 @@ class MediaDownloadWindow(QMainWindow):
       pass
 
     self.close()
-
-
-  def closeEvent(self, event):
-    pass
-
