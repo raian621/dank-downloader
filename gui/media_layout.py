@@ -1,12 +1,48 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
+from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
 from .download_window import MediaDownloadWindow
 from database import make_session
 from database.models import Media, VideoData
 
-class MediaRow(QHBoxLayout):
+
+class MediaTable(QWidget):
   def __init__(self, parent=None):
     super().__init__(parent)
-    
+    self.setLayout(QGridLayout())
+    self.populateTable()
+
+
+  def populateTable(self):
+    self.heading = QHBoxLayout()
+    self.heading = ['TITLE', 'FORMAT', 'LENGTH', 'LOCATION', 'OPTIONS']
+    self.rows = []
+    self.getMediaFromDB()
+    for i in range(len(self.heading)):
+      self.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
+
+    for i in range(len(self.rows)):
+      self.layout().addWidget(QPushButton('Play'), i + 1, 0)
+      for j in range(len(self.rows[i])):
+        if j == 0:
+          self.layout().addWidget(QLabel(self.rows[i][j][0]), i + 1, j + 1)
+        else:
+          self.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
+
+
+  def getMediaFromDB(self):
+    with make_session() as session:
+      mediaList = session.query(Media).all()
+      print(mediaList)
+      for media in mediaList:
+        row = [
+          [f'{media.title}', f'{media.subtitle}'],
+          media.extension,
+          f"{media.playlength}",
+          media.filepath,
+          "options"
+        ]
+
+        self.rows.append(row)
+
 
 class MediaLayout(QVBoxLayout):
   def __init__(self, parent=None):
@@ -19,9 +55,7 @@ class MediaLayout(QVBoxLayout):
     barLayout.addWidget(label)
     barLayout.addWidget(downloadButton)
     scrollArea = QScrollArea()
-    tableWidget = QWidget()
-    self.tableLayout = QVBoxLayout(tableWidget)
-    scrollArea.setWidget(tableWidget)
+    scrollArea.setWidget(MediaTable())
     layout = QVBoxLayout()
     layout.addLayout(barLayout)
     layout.addWidget(scrollArea)
@@ -31,34 +65,3 @@ class MediaLayout(QVBoxLayout):
   def showDownloadWindow(self):
     self.dlWindow = MediaDownloadWindow()
     self.dlWindow.show()
-
-
-  def populateTable(self):
-    self.heading = QHBoxLayout()
-    self.heading.addWidget(QLabel("TITLE"))
-    self.heading.addWidget(QLabel("FORMAT"))
-    self.heading.addWidget(QLabel("LENGTH"))
-    self.heading.addWidget(QLabel("LOCATION"))
-    self.heading.addWidget(QLabel("OPTIONS"))
-
-    self.rows = [self.heading]
-    self.getMediaFromDB()
-
-    for row in self.rows:
-      print(row)
-      self.tableLayout.addLayout(row)
-
-
-  def getMediaFromDB(self):
-    # shit, the layout stuff isn't working
-    with make_session() as session:
-      mediaList = session.query(Media).all()
-      print(mediaList)
-      for media in mediaList:
-        layout = QHBoxLayout()
-        layout.addWidget(QLabel(f'{media.title}, {media.subtitle}'))
-        layout.addWidget(QLabel(media.extension))
-        layout.addWidget(QLabel(f"{media.playlength}"))
-        layout.addWidget(QLabel(media.filepath))
-        layout.addWidget(QLabel("options"))
-        self.rows.append(layout)
