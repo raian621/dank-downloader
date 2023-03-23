@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPus
 from .download_window import MediaDownloadWindow
 from database import make_session
 from database.models import Media
+from .media_player import MediaPlayer
 
 
 class MediaTable(QScrollArea):
@@ -24,7 +25,10 @@ class MediaTable(QScrollArea):
       widget.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
 
     for i in range(len(self.rows)):
-      widget.layout().addWidget(QPushButton('Play'), i + 1, 0)
+      button = QPushButton('Play')
+      button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]));
+
+      widget.layout().addWidget(button, i + 1, 0)
       for j in range(len(self.rows[i])):
         if j == 0:
           widget.layout().addWidget(QLabel(self.rows[i][j][0]), i + 1, j + 1)
@@ -32,6 +36,11 @@ class MediaTable(QScrollArea):
           widget.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
 
     self.setWidget(widget)
+
+  def createMediaWindow(self, mediaList):
+    print("ASDSDSFdfd")
+    self.mediaPlayer = MediaPlayer(mediaList)
+    self.mediaPlayer.show()
 
 
   def getMediaFromDB(self):
