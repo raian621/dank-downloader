@@ -56,9 +56,17 @@ class AudioFormWindow(QWidget):
     self.extension = QComboBox()
     self.extension.addItems(extensions)
 
+    submit = QPushButton("Submit")
+    submit.clicked.connect(self.submit)
+
     flo = QFormLayout()
     flo.addRow("Extension", self.extension)
+    flo.addRow(submit)
     self.setLayout(flo)
+
+  def submit(self):
+    self.file_extension = self.extension.currentText()
+    self.submitForm()
 
 
 class MediaDownloadWindow(QMainWindow):
@@ -88,20 +96,35 @@ class MediaDownloadWindow(QMainWindow):
 
 
   def showAudioSettings(self):
-    self.extensions = ['mp4', 'webm']
+    self.downloader = MediaManager(self.urlForm.url)
+    self.downloader.get_streams()
+
+    self.extensions = self.downloader.get_formats()
     self.audioSettings = AudioFormWindow(self.extensions)
     self.setWindowTitle("Select Audio Settings")
     self.setCentralWidget(self.audioSettings)
-    self.audioSettings.submit.clicked.connect(self.submit)
+    self.audioSettings.submitForm = self.submit
 
 
   def submit(self):
+    media_info = None
     if self.urlForm.file_type == "Video":
-      self.downloader.download_video(
+      media_info = self.downloader.download_video(
         file_extension=self.videoSettings.file_extension,
         resolution=self.videoSettings.video_resolution
       )
     else:
-      pass
+      media_info = self.downloader.download_audio(
+        file_extension=self.audioSettings.file_extension
+      )
 
+    self.rows.append([
+      [f'{media_info["title"]}', f'{media_info["subtitle"]}'],
+      media_info["extension"],
+      f'{media_info["playlength"]}',
+      media_info["filepath"],
+      "options"
+    ])
+    
+    self.repopulateTable()
     self.close()

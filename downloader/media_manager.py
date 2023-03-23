@@ -31,7 +31,8 @@ class MediaManager(MediaDownloader):
     result["subtitle"] = subtitle
 
     if result:
-      add_media_to_db(result, is_video=True)
+      print(add_media_to_db(result, is_video=True))
+    return result
 
   
   def download_audio(
@@ -53,4 +54,6 @@ class MediaManager(MediaDownloader):
     result["subtitle"] = subtitle
 
     if result:
-      add_media_to_db(result, is_video=False)
+      print(add_media_to_db(result, is_video=False))
+
+    return result

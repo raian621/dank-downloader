@@ -1,31 +1,37 @@
 from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
 from .download_window import MediaDownloadWindow
 from database import make_session
-from database.models import Media, VideoData
+from database.models import Media
 
 
-class MediaTable(QWidget):
+class MediaTable(QScrollArea):
   def __init__(self, parent=None):
     super().__init__(parent)
-    self.setLayout(QGridLayout())
+    self.rows = None
     self.populateTable()
 
 
   def populateTable(self):
-    self.heading = QHBoxLayout()
+    widget = QWidget()
+    widget.setLayout(QGridLayout())
     self.heading = ['TITLE', 'FORMAT', 'LENGTH', 'LOCATION', 'OPTIONS']
-    self.rows = []
-    self.getMediaFromDB()
+    
+    if self.rows == None:
+      self.rows = []
+      self.getMediaFromDB()
+
     for i in range(len(self.heading)):
-      self.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
+      widget.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
 
     for i in range(len(self.rows)):
-      self.layout().addWidget(QPushButton('Play'), i + 1, 0)
+      widget.layout().addWidget(QPushButton('Play'), i + 1, 0)
       for j in range(len(self.rows[i])):
         if j == 0:
-          self.layout().addWidget(QLabel(self.rows[i][j][0]), i + 1, j + 1)
+          widget.layout().addWidget(QLabel(self.rows[i][j][0]), i + 1, j + 1)
         else:
-          self.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
+          widget.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
+
+    self.setWidget(widget)
 
 
   def getMediaFromDB(self):
@@ -54,14 +60,15 @@ class MediaLayout(QVBoxLayout):
     barLayout = QHBoxLayout()
     barLayout.addWidget(label)
     barLayout.addWidget(downloadButton)
-    scrollArea = QScrollArea()
-    scrollArea.setWidget(MediaTable())
+    self.mediaTable = MediaTable()
     layout = QVBoxLayout()
     layout.addLayout(barLayout)
-    layout.addWidget(scrollArea)
+    layout.addWidget(self.mediaTable)
     self.addLayout(layout)
 
 
   def showDownloadWindow(self):
     self.dlWindow = MediaDownloadWindow()
+    self.dlWindow.repopulateTable = self.mediaTable.populateTable
+    self.dlWindow.rows = self.mediaTable.rows
     self.dlWindow.show()

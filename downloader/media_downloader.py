@@ -68,7 +68,7 @@ class MediaDownloader:
     for stream in self.streams:
       if stream.resolution:
         self.resolutions.add(stream.resolution)
-    
+
     self.resolutions = sorted(list(self.resolutions), key=resolution_to_int, reverse=True)
     
     return self.resolutions
@@ -83,12 +83,12 @@ class MediaDownloader:
 
     if self.bitrates == None:
       bitrates = set()
-    for stream in self.streams.filter(only_audio=True):
-      if stream.bitrate:
-        bitrates.add(stream.bitrate)
+      for stream in self.streams.filter(only_audio=True):
+        if stream.bitrate:
+          bitrates.add(stream.bitrate)
 
-    self.bitrates = list(bitrates)
-    self.bitrates.sort()
+      self.bitrates = list(bitrates)
+      self.bitrates.sort()
 
     return self.bitrates
 
@@ -102,12 +102,12 @@ class MediaDownloader:
 
     if self.formats == None:
       formats = set()
-    for stream in self.streams:
-      if stream.subtype:
-        formats.add(stream.subtype)
+      for stream in self.streams:
+        if stream.subtype:
+          formats.add(stream.subtype)
 
-    self.formats = list(formats)
-    self.formats.sort()
+      self.formats = list(formats)
+      self.formats.sort()
 
     return self.formats
 

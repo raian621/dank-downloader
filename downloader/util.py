@@ -61,7 +61,8 @@ def add_media_to_db(media_info:dict, is_video:bool):
         stuff_to_hash.append(media_info["resolution"])
         stuff_to_hash.append(media_info["fps"])
     else:
-        stuff_to_hash.append(media_info["bitrate"])
+        pass
+        # stuff_to_hash.append(media_info["bitrate"])
     media_hash = create_media_hash(stuff_to_hash)
 
     with make_session() as session:
@@ -87,4 +88,6 @@ def add_media_to_db(media_info:dict, is_video:bool):
         user.media.append(media)
         session.add(user)
         session.commit()
+
+    return media_info
       
