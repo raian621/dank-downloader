@@ -145,8 +145,6 @@ class MediaDownloader:
 
     convert_to = None
     if file_extension in (additional_file_formats['video']):
-      print(additional_file_formats['video'])
-      print('sadjfhsdjhsdfhfgashjdfgasdfhhjdfghjgasdhfjfghgsdhfjashdffgasdg')
       convert_to = file_extension
       file_extension = DEFAULT_FILE_FORMAT
 
@@ -164,6 +162,8 @@ class MediaDownloader:
 
     title = video_stream.title
     file_path = os.path.join(file_destination, f"{title}_{resolution}_{fps}.{file_extension}")
+    if convert_to != None:
+      file_path = file_path.replace(f'.{file_extension}', f'_intermediate.{file_extension}')
 
     # TODO: add sentinel here to avoid redownloading files :wtf
 
@@ -195,7 +195,7 @@ class MediaDownloader:
     if video_exists and audio_exists:
       video = ffmpeg.input(video_file_path)
       audio = ffmpeg.input(audio_file_path)
-      ffmpeg.output(video, audio, file_path).run()
+      ffmpeg.output(video, audio, file_path).run(overwrite_output=True)
 
       os.remove(audio_file_path)
       os.remove(video_file_path)
@@ -205,10 +205,9 @@ class MediaDownloader:
       return None
 
     if convert_to != None:
-      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n\n\n\n\n\n\n\n\n\n\n")
       # video.mp4 -> video.wav
       new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
-      ffmpeg.input(file_path).output(new_file_path).run()
+      ffmpeg.input(file_path).output(new_file_path).run(overwrite_output=True)
       os.remove(file_path)
       file_extension = convert_to
       file_path = new_file_path
@@ -256,12 +255,15 @@ class MediaDownloader:
       return None
     
     file_path = os.path.join(file_destination, f"{stream.title}_{stream.bitrate}.{file_extension}")
+    if convert_to != None:
+      file_path = file_path.replace(f'.{file_extension}', f'_intermediate.{file_extension}')
+    
     download_stream(stream, file_path)
 
     if convert_to != None:
       # video.mp4 -> video.wav
       new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
-      ffmpeg.input(file_path).output(new_file_path).run()
+      ffmpeg.input(file_path).output(new_file_path).run(overwrite_output=True)
       os.remove(file_path)
       file_extension = convert_to
       file_path = new_file_path
