@@ -2,7 +2,8 @@ DEFAULT_FILE_FORMAT = 'mp4'
 
 additional_file_formats = {
     "video": {
-        "mov"
+        "mov",
+        "avi"
     },
     "audio": {
         "mp3",

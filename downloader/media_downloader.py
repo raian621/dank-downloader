@@ -240,6 +240,11 @@ class MediaDownloader:
     # basically try to just download an available format like mp4 
     # and convert it to the requested file type at the end of the method
 
+    convert_to = None
+    if file_extension in additional_file_formats['audio']:
+      convert_to = file_extension
+      file_extension = DEFAULT_FILE_FORMAT
+
     if self.streams == None:
       self.get_streams
     
@@ -249,6 +254,14 @@ class MediaDownloader:
     
     file_path = os.path.join(file_destination, f"{stream.title}_{stream.bitrate}.{file_extension}")
     download_stream(stream, file_path)
+
+    if convert_to != None:
+      # video.mp4 -> video.wav
+      new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
+      ffmpeg.input(file_path).output(new_file_path).run()
+      os.remove(file_path)
+      file_extension = convert_to
+      file_path = new_file_path
 
     return {
       "playlength": self.length,
