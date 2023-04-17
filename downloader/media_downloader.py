@@ -103,7 +103,7 @@ class MediaDownloader:
 
     if self.formats == None:
       # formats = (is_audio ? asdf['audio'] : asdf ['video'])
-      formats = additional_file_formats['audio'] if is_audio else additional_file_formats['video'] 
+      formats = {*additional_file_formats['audio']} if is_audio else {*additional_file_formats['video']}
       for stream in self.streams:
         if stream.subtype:
           formats.add(stream.subtype)
@@ -144,7 +144,9 @@ class MediaDownloader:
     # requested file type at the end of the method
 
     convert_to = None
-    if file_extension in additional_file_formats['video']:
+    if file_extension in (additional_file_formats['video']):
+      print(additional_file_formats['video'])
+      print('sadjfhsdjhsdfhfgashjdfgasdfhhjdfghjgasdhfjfghgsdhfjashdffgasdg')
       convert_to = file_extension
       file_extension = DEFAULT_FILE_FORMAT
 
@@ -203,6 +205,7 @@ class MediaDownloader:
       return None
 
     if convert_to != None:
+      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n\n\n\n\n\n\n\n\n\n\n")
       # video.mp4 -> video.wav
       new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
       ffmpeg.input(file_path).output(new_file_path).run()
