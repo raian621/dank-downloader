@@ -1,7 +1,8 @@
-supported_file_formats = {
+DEFAULT_FILE_FORMAT = 'mp4'
+
+additional_file_formats = {
     "video": {
-        "mp4",
-        "webm"
+        "mov"
     },
     "audio": {
         "mp3",

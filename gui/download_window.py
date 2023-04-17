@@ -99,7 +99,7 @@ class MediaDownloadWindow(QMainWindow):
     self.downloader = MediaManager(self.urlForm.url)
     self.downloader.get_streams()
 
-    self.extensions = self.downloader.get_formats()
+    self.extensions = self.downloader.get_formats(is_audio=True)
     self.audioSettings = AudioFormWindow(self.extensions)
     self.setWindowTitle("Select Audio Settings")
     self.setCentralWidget(self.audioSettings)

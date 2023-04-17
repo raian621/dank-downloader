@@ -3,6 +3,7 @@ from threading import Thread
 import ffmpeg
 
 from .util import *
+from .supported_files import *
 
 class MediaDownloader:
   def __init__(self, url):
@@ -93,7 +94,7 @@ class MediaDownloader:
     return self.bitrates
 
 
-  def get_formats(self):
+  def get_formats(self, is_audio=False):
     if self.streams == None:
       self.get_streams()
     # if the downloader still can't get any streams, return none
@@ -101,7 +102,8 @@ class MediaDownloader:
       return None
 
     if self.formats == None:
-      formats = set()
+      # formats = (is_audio ? asdf['audio'] : asdf ['video'])
+      formats = additional_file_formats['audio'] if is_audio else additional_file_formats['video'] 
       for stream in self.streams:
         if stream.subtype:
           formats.add(stream.subtype)
@@ -110,7 +112,6 @@ class MediaDownloader:
       self.formats.sort()
 
     return self.formats
-
 
   def download_video(
     self,
@@ -142,6 +143,11 @@ class MediaDownloader:
     # just download an available format like mp4 and convert it to the
     # requested file type at the end of the method
 
+    convert_to = None
+    if file_extension in additional_file_formats['video']:
+      convert_to = file_extension
+      file_extension = DEFAULT_FILE_FORMAT
+
     video_stream = self.streams.filter(only_video=True, resolution=resolution, fps=fps, file_extension=file_extension).desc().first()
     audio_stream = self.streams.filter(only_audio=True, file_extension=file_extension).order_by('bitrate').desc().first()
 
@@ -157,7 +163,7 @@ class MediaDownloader:
     title = video_stream.title
     file_path = os.path.join(file_destination, f"{title}_{resolution}_{fps}.{file_extension}")
 
-    # TODO: add sentinel here to avoid redownloading files
+    # TODO: add sentinel here to avoid redownloading files :wtf
 
     video_file_path = os.path.join(file_destination, file_path.replace(f".{file_extension}", f"_video.{file_extension}"))
     audio_file_path = os.path.join(file_destination, file_path.replace(f".{file_extension}", f"_audio.{file_extension}"))
@@ -195,6 +201,14 @@ class MediaDownloader:
       os.rename(video_file_path, file_path)
     else:
       return None
+
+    if convert_to != None:
+      # video.mp4 -> video.wav
+      new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
+      ffmpeg.input(file_path).output(new_file_path).run()
+      os.remove(file_path)
+      file_extension = convert_to
+      file_path = new_file_path
 
     return {
       "playlength": self.length,
