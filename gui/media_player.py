@@ -1,6 +1,6 @@
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtCore import QUrl
 
 class MediaPlayer(QWidget):
@@ -8,12 +8,17 @@ class MediaPlayer(QWidget):
         super(MediaPlayer, self).__init__(parent)
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 
+        self.setGeometry(100, 100, 640, 480)
+
         videoWidget = QVideoWidget()
+        self.layout = QVBoxLayout(self)
+        self.layout.addChildWidget(videoWidget)
 
         self.mediaPlayer.setVideoOutput(videoWidget)
         self.open_file(media_list[0])
         self.media_index = 0
         # self.stateChanged.connect(self.mediaStateChanged)
+        
         self.play()
         self.show()
         
@@ -24,6 +29,7 @@ class MediaPlayer(QWidget):
             pass
 
     def open_file(self, filepath):
+        print(filepath)
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(filepath)))
 
     def play(self):

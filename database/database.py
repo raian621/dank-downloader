@@ -5,7 +5,7 @@ import os
 from .models import *
 
 
-engine = create_engine("sqlite+pysqlite:///dank-downloader.db", echo=True)
+engine = create_engine("sqlite+pysqlite:///dank-downloader.db", echo=False)
 Base.metadata.create_all(bind=engine)
 
 def make_session():

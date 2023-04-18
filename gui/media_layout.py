@@ -24,9 +24,13 @@ class MediaTable(QScrollArea):
     for i in range(len(self.heading)):
       widget.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
 
+    for row in self.rows:
+      print(row)
+
     for i in range(len(self.rows)):
       button = QPushButton('Play')
-      button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]));
+      button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]))
+      print(self.rows[i][3])
 
       widget.layout().addWidget(button, i + 1, 0)
       for j in range(len(self.rows[i])):
@@ -38,7 +42,7 @@ class MediaTable(QScrollArea):
     self.setWidget(widget)
 
   def createMediaWindow(self, mediaList):
-    print("ASDSDSFdfd")
+    print(mediaList)
     self.mediaPlayer = MediaPlayer(mediaList)
     self.mediaPlayer.show()
 

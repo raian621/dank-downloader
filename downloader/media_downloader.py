@@ -206,7 +206,7 @@ class MediaDownloader:
 
     if convert_to != None:
       # video.mp4 -> video.wav
-      new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
+      new_file_path = file_path.replace(f'_intermediate.{file_extension}', f'.{convert_to}')
       ffmpeg.input(file_path).output(new_file_path).run(overwrite_output=True)
       os.remove(file_path)
       file_extension = convert_to
@@ -262,7 +262,7 @@ class MediaDownloader:
 
     if convert_to != None:
       # video.mp4 -> video.wav
-      new_file_path = file_path.replace(f'.{file_extension}', f'.{convert_to}')
+      new_file_path = file_path.replace(f'_intermediate.{file_extension}', f'.{convert_to}')
       ffmpeg.input(file_path).output(new_file_path).run(overwrite_output=True)
       os.remove(file_path)
       file_extension = convert_to
