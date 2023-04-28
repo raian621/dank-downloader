@@ -7,6 +7,9 @@ from database.models import *
 
 # initialize the default download directory
 DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")
+
+MOCK_MODE = True
+
 print(DOWNLOAD_DIRECTORY)
 if os.path.exists(DOWNLOAD_DIRECTORY) == False:
     os.makedirs(DOWNLOAD_DIRECTORY)

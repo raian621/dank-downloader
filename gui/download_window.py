@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QComboBox, QLineEdit, QFormLayout, QMainWindow
 from downloader import MediaDownloadInfo, MediaManager
+from .progress_window import ProgressWindow
+from downloader.util import MOCK_MODE
 
 class URLFormWindow(QWidget):
   def __init__(self, parent=None):
@@ -85,8 +87,9 @@ class MediaDownloadWindow(QMainWindow):
 
   def showVideoSettings(self):
     self.downloader = MediaManager(self.urlForm.url)
-    self.downloader.get_streams()
-
+    if MOCK_MODE == False:
+      self.downloader.get_streams()
+    
     self.extensions = self.downloader.get_formats()
     self.resolutions = self.downloader.get_resolutions()
     self.videoSettings = VideoFormWindow(self.extensions, self.resolutions)
@@ -97,7 +100,8 @@ class MediaDownloadWindow(QMainWindow):
 
   def showAudioSettings(self):
     self.downloader = MediaManager(self.urlForm.url)
-    self.downloader.get_streams()
+    if MOCK_MODE == False:
+      self.downloader.get_streams()
 
     self.extensions = self.downloader.get_formats(is_audio=True)
     self.audioSettings = AudioFormWindow(self.extensions)
@@ -106,8 +110,14 @@ class MediaDownloadWindow(QMainWindow):
     self.audioSettings.submitForm = self.submit
 
 
+  def showProgressWindow(self):
+    self.progressWindow = ProgressWindow()
+    self.progressWindow.show()
+  
+
   def submit(self):
     media_info = None
+    self.showProgressWindow()
     if self.urlForm.file_type == "Video":
       media_info = self.downloader.download_video(
         file_extension=self.videoSettings.file_extension,
@@ -126,5 +136,6 @@ class MediaDownloadWindow(QMainWindow):
       "options"
     ])
     
+    self.progressWindow.close()
     self.repopulateTable()
     self.close()

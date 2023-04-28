@@ -8,10 +8,16 @@ from .supported_files import *
 class MediaDownloader:
   def __init__(self, url):
     self.url = url
-    self.yt = YouTube(url)
-    self.length = self.yt.length
-    self.streams, self.formats, self.bitrates = \
-      (None, None, None)
+    if MOCK_MODE:
+      self.length = 69
+      self.formats = ['mp4', 'mp3']
+      self.bitrates = [1, 2, 3, 4, 5, 6]
+      self.streams = None
+    else:
+      self.yt = YouTube(url)
+      self.length = self.yt.length
+      self.streams, self.formats, self.bitrates = \
+        (None, None, None)
 
 
   def get_streams(
@@ -59,6 +65,10 @@ class MediaDownloader:
     return (self.streams, self.length)
 
   def get_resolutions(self):
+    if MOCK_MODE:
+      self.formats = ['720p', '1080p']
+      return self.formats
+
     if self.streams == None:
       self.get_streams()
     # if the downloader still can't get any streams, return none
@@ -95,6 +105,13 @@ class MediaDownloader:
 
 
   def get_formats(self, is_audio=False):
+    if MOCK_MODE:
+      if is_audio:
+        self.formats = ['mp3']
+      else:
+        self.formats = ['mp4']
+      return self.formats
+
     if self.streams == None:
       self.get_streams()
     # if the downloader still can't get any streams, return none

@@ -18,6 +18,11 @@ pip install -r requirements.txt
 python main.py
 ```
 
+### To launch the program in "mock mode" (no video downloads, create mock objects)
+```sh
+python main.py mock
+```
+
 ## Example Playlist Configuration File
 
 ```json

@@ -1,8 +1,18 @@
+#!./venv/bin/python
+
 from gui import show_main_window
+from sys import argv
+import os
+from downloader.util import *
 
 def main():
+    if len(argv) == 2 and argv[1] == 'mock':
+        MOCK_MODE = True
+        print('==============================')
+        print('PROGRAM STARTING IN MOCK MODE,')
+        print('MEDIA WILL NOT BE DOWNLOADED')
+        print('==============================')
     show_main_window()
-    
     
     # url = input("Please enter a video URL from YouTube: ")
     # is_audio = input("Audio download [A] or video download [V]: ").upper() == "A"

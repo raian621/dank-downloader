@@ -42,7 +42,6 @@ class MediaTable(QScrollArea):
     self.setWidget(widget)
 
   def createMediaWindow(self, mediaList):
-    print(mediaList)
     self.mediaPlayer = MediaPlayer(mediaList)
     self.mediaPlayer.show()
 
