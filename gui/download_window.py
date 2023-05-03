@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QComboBox, QLineEdit, QFormLayout, QMainWindow
+from PySide6.QtWidgets import QWidget, QPushButton, QLabel, QComboBox, QLineEdit, QFormLayout, QMainWindow
 from downloader import MediaDownloadInfo, MediaManager
 from .progress_window import ProgressWindow
 from downloader.util import MOCK_MODE

@@ -1,12 +1,12 @@
-from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
-from PyQt5.QtCore import QUrl
+from PySide6.QtMultimediaWidgets import QVideoWidget
+from PySide6.QtMultimedia import QMediaPlayer
+from PySide6.QtWidgets import QWidget, QVBoxLayout
+from PySide6.QtCore import QUrl
 
 class MediaPlayer(QWidget):
     def __init__(self, media_list, parent=None):
         super(MediaPlayer, self).__init__(parent)
-        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.mediaPlayer = QMediaPlayer()
 
         self.setGeometry(100, 100, 640, 480)
 
@@ -30,10 +30,10 @@ class MediaPlayer(QWidget):
 
     def open_file(self, filepath):
         print(filepath)
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(filepath)))
+        self.mediaPlayer.setSource(QUrl.fromLocalFile(filepath))
 
     def play(self):
-        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+        if self.mediaPlayer.playbackState() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
         else:
             self.mediaPlayer.play()
