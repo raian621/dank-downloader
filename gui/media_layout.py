@@ -9,6 +9,7 @@ class MediaTable(QScrollArea):
   def __init__(self, parent=None):
     super().__init__(parent)
     self.rows = None
+    self.contextMenus = []
     self.populateTable()
 
   def populateTable(self):
@@ -25,7 +26,9 @@ class MediaTable(QScrollArea):
 
     for i in range(len(self.rows)):
       button = QPushButton('Play')
-      button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]))
+      # button.clicked.connect passes a bool to the first parameter of the passed function
+      # we have to "sacrifice" a placeholder variable _
+      button.clicked.connect(lambda _='', filepath=self.rows[i][3]: self.createMediaWindow([filepath]))
 
       widget.layout().addWidget(button, i + 1, 0)
       n_variables = len(self.rows[i])
@@ -34,11 +37,13 @@ class MediaTable(QScrollArea):
           widget.layout().addWidget(QLabel(self.rows[i][j][0]), i + 1, j + 1)
         else:
           widget.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
-      self.contextMenu = QMenu()
-      self.contextMenu.addAction('Delete', lambda: print(f'Delete {self.rows[i][0][0]}'))
-      self.contextMenu.addAction('Add to Playlist', lambda: print('Add to Playlist'))
+      contextMenu = QMenu()
+      self.contextMenus.append(contextMenu)
+      contextMenu.addAction('Delete', lambda toDelete=self.rows[i][0][0]: print(f'Delete {toDelete}'))
+      print(self.rows[i][0][0])
+      contextMenu.addAction('Add to Playlist', lambda: print('Add to Playlist'))
       contextButton = QPushButton('Options')
-      contextButton.setMenu(self.contextMenu)
+      contextButton.setMenu(contextMenu)
       widget.layout().addWidget(contextButton, i + 1, n_variables + 1)
 
     self.setWidget(widget)
@@ -57,7 +62,6 @@ class MediaTable(QScrollArea):
           f"{media.playlength}",
           media.filepath,
         ]
-
         self.rows.append(row)
 
 

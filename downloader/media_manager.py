@@ -1,7 +1,7 @@
 from .media_downloader import MediaDownloader
 from .util import DOWNLOAD_DIRECTORY, create_media_hash, add_media_to_db
 from database import make_session, get_user
-from .util import MOCK_MODE
+from .util import is_mock_mode
 
 
 class MediaManager(MediaDownloader):
@@ -18,7 +18,7 @@ class MediaManager(MediaDownloader):
       subtitle:str|None=""
   ):
     result = None
-    if MOCK_MODE:
+    if is_mock_mode():
       result = {
         'playlength': self.length,
         'extension': 'mp4',
@@ -55,7 +55,7 @@ class MediaManager(MediaDownloader):
       subtitle:str|None=""
   ):
     result = None
-    if MOCK_MODE:
+    if is_mock_mode():
       result = {
         'playlength': self.length,
         'extension': 'mp3',

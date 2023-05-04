@@ -8,7 +8,7 @@ from .supported_files import *
 class MediaDownloader:
   def __init__(self, url):
     self.url = url
-    if MOCK_MODE:
+    if is_mock_mode():
       self.length = 69
       self.formats = ['mp4', 'mp3']
       self.bitrates = [1, 2, 3, 4, 5, 6]
@@ -65,7 +65,7 @@ class MediaDownloader:
     return (self.streams, self.length)
 
   def get_resolutions(self):
-    if MOCK_MODE:
+    if is_mock_mode():
       self.formats = ['720p', '1080p']
       return self.formats
 
@@ -105,7 +105,7 @@ class MediaDownloader:
 
 
   def get_formats(self, is_audio=False):
-    if MOCK_MODE:
+    if is_mock_mode():
       if is_audio:
         self.formats = ['mp3']
       else:

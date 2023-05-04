@@ -3,6 +3,7 @@ from PySide6.QtGui import QIcon
 from .playlist_layout import PlaylistLayout
 from .media_layout import MediaLayout
 from .playlist_view import PlaylistView
+from downloader import is_mock_mode
 
 class MediaView(QWidget):
   def __init__(self, parent=None, showPlaylistView=None):
@@ -20,19 +21,19 @@ class MediaView(QWidget):
 class MainWindow(QMainWindow):
   def __init__(self, parent=None):
     super().__init__(parent)
-    self.mediaView = None
-    self.playlistView = None
     self.resize(800, 500)
-    self.setWindowTitle('Dank Downloader')
+    if is_mock_mode():
+      self.setWindowTitle('Dank Downloader [MOCK MODE]')
+    else:
+      self.setWindowTitle('Dank Downloader')
     self.setWindowIcon(QIcon('assets/dankdownloader.ico'))
     self.showMediaView()
 
   def showMediaView(self):
-    if self.mediaView == None:
-      self.mediaView = MediaView(showPlaylistView=self.showPlaylistView)
+    self.mediaView = MediaView(showPlaylistView=self.showPlaylistView)
     self.setCentralWidget(self.mediaView)
 
   def showPlaylistView(self, title):
-    if self.playlistView == None:
-      self.playlistView = PlaylistView(title=title)
+    print(title)
+    self.playlistView = PlaylistView(title=title, goBack=self.showMediaView)
     self.setCentralWidget(self.playlistView)

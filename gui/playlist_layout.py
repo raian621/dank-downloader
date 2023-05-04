@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea, QGridLayout, QMenu
-from PySide6.QtCore import Qt
 from .playlist_windows import *
 from database import make_session, Playlist
 
@@ -7,7 +6,9 @@ class PlaylistTable(QScrollArea):
   def __init__(self, parent=None, showPlaylistView=None):
     super().__init__(parent)
     self.rows = None
+    self.contextMenus = []
     self.populateTable()
+    self.showPlaylistView = showPlaylistView
 
   def populateTable(self):
     widget = QWidget()
@@ -23,16 +24,21 @@ class PlaylistTable(QScrollArea):
 
     for i in range(len(self.rows)):
       button = QPushButton('Open')
+      name = self.rows[i][0]
+      button.clicked.connect(lambda _='', playlistName=f'{name}': self.showPlaylistView(playlistName))
+      print("A", self.rows[i][0])
       widget.layout().addWidget(button, i + 1, 0)
       n_variables = len(self.rows[i])
       for j in range(n_variables):
         widget.layout().addWidget(QLabel(str(self.rows[i][j])), i + 1, j + 1)
-      self.contextMenu = QMenu()
-      self.contextMenu.addAction("Add Media", lambda: print("Add Media"))
-      self.contextMenu.addAction("Delete", lambda: print("Delete"))
+      contextMenu = QMenu()
+      self.contextMenus.append(contextMenu)
+      contextMenu.addAction("Add Media", lambda: print("Add Media"))
+      contextMenu.addAction("Delete", lambda: print("Delete"))
       button = QPushButton('Options')
-      button.setMenu(self.contextMenu)
+      button.setMenu(contextMenu)
       widget.layout().addWidget(button, i + 1, n_variables + 1)
+    print("A", self.rows)
     self.setWidget(widget)
 
   def getPlaylistsFromDB(self):

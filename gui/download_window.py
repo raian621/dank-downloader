@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QPushButton, QLabel, QComboBox, QLineEdit, QFormLayout, QMainWindow
 from downloader import MediaDownloadInfo, MediaManager
 from .progress_window import ProgressWindow
-from downloader.util import MOCK_MODE
+from downloader import is_mock_mode
 
 class URLFormWindow(QWidget):
   def __init__(self, parent=None):
@@ -84,7 +84,7 @@ class MediaDownloadWindow(QMainWindow):
 
   def showVideoSettings(self):
     self.downloader = MediaManager(self.urlForm.url)
-    if MOCK_MODE == False:
+    if is_mock_mode() == False:
       self.downloader.get_streams()
     
     self.extensions = self.downloader.get_formats()
@@ -97,7 +97,7 @@ class MediaDownloadWindow(QMainWindow):
 
   def showAudioSettings(self):
     self.downloader = MediaManager(self.urlForm.url)
-    if MOCK_MODE == False:
+    if is_mock_mode() == False:
       self.downloader.get_streams()
 
     self.extensions = self.downloader.get_formats(is_audio=True)

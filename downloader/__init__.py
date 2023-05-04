@@ -4,6 +4,7 @@ from .supported_files import *
 from .media_downloader import MediaDownloader
 from .media_manager import MediaManager
 from .media_download_info import MediaDownloadInfo
+from .util import is_mock_mode
 
 # # initialize the default download directory
 # DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")

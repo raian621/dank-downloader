@@ -8,8 +8,6 @@ from database.models import *
 # initialize the default download directory
 DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")
 
-MOCK_MODE = True
-
 print(DOWNLOAD_DIRECTORY)
 if os.path.exists(DOWNLOAD_DIRECTORY) == False:
     os.makedirs(DOWNLOAD_DIRECTORY)
@@ -45,11 +43,9 @@ def create_media_hash(attr) -> str:
     """
     creates a sha256 hash for an array of data
     """
-    
     hasher = hashlib.sha256()
     hasher.update(repr(attr).encode())
     return hasher.hexdigest() 
-
 
 def add_media_to_db(media_info:dict, is_video:bool):
     stuff_to_hash = [
@@ -93,4 +89,6 @@ def add_media_to_db(media_info:dict, is_video:bool):
         session.commit()
 
     return media_info
-      
+
+def is_mock_mode():
+    return ('MOCK_MODE' in os.environ)
