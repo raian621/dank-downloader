@@ -5,6 +5,8 @@ import ffmpeg
 from .util import *
 from .supported_files import *
 
+    
+
 class MediaDownloader:
   def __init__(self, url):
     self.url = url
@@ -42,25 +44,22 @@ class MediaDownloader:
 
     self.yt.register_on_progress_callback(on_progress_callback)
 
-    try:
-      self.streams = self.yt.streams.filter(
-        fps=fps,
-        res=res,
-        resolution=resolution,
-        mime_type=mime_type,
-        type=type,
-        subtype=subtype,
-        file_extension=file_extension,
-        abr=abr,
-        bitrate=bitrate,
-        video_codec=video_codec,
-        audio_codec=audio_codec,
-        only_audio=only_audio,
-        only_video=only_video,
-        adaptive=True
-      )
-    except Exception as e:
-      print(e)
+    self.streams = self.yt.streams.filter(
+      fps=fps,
+      res=res,
+      resolution=resolution,
+      mime_type=mime_type,
+      type=type,
+      subtype=subtype,
+      file_extension=file_extension,
+      abr=abr,
+      bitrate=bitrate,
+      video_codec=video_codec,
+      audio_codec=audio_codec,
+      only_audio=only_audio,
+      only_video=only_video,
+      adaptive=True
+    )
 
     return (self.streams, self.length)
 
@@ -187,21 +186,23 @@ class MediaDownloader:
     video_file_path = os.path.join(file_destination, file_path.replace(f".{file_extension}", f"_video.{file_extension}"))
     audio_file_path = os.path.join(file_destination, file_path.replace(f".{file_extension}", f"_audio.{file_extension}"))
     
-    video_thread = Thread(
-      target=download_stream,
-      args=(video_stream, video_file_path,)
-    )
+    print('asdkjfhasdjkfhkjshdfk')
+    video_thread = DownloaderThread(video_stream, video_file_path)
     
-    # if there was no audio stream, do not try to download the audio file
-    audio_thread = Thread(
-      target=download_stream, 
-      args=(audio_stream, audio_file_path,)
-    )
+    # if there was no audio stream, do not try to download the audio file # wut
+    audio_thread = DownloaderThread(audio_stream, audio_file_path)
 
     video_thread.start()
     audio_thread.start()
     video_thread.join()
     audio_thread.join()
+
+    # ensure that errors/exceptions that occurred in threads are propogated
+    # through the main thread
+    if video_thread.error:
+      print("ERROR:", video_thread.error)
+      raise video_thread.error
+    if audio_thread.error: raise audio_thread.error
 
     video_exists = os.path.exists(video_file_path)
     audio_exists = os.path.exists(audio_file_path)

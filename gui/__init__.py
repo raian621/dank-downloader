@@ -7,6 +7,7 @@ def show_main_window():
   app = QApplication(sys.argv)
   window = MainWindow()
   window.show()
+  sys.excepthook = window.excepthook
   sys.exit(app.exec_())
 
 if __name__ == '__main__':

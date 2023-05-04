@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QPushButton, QLabel, QComboBox, QLineEdit, QFormLayout, QMainWindow
+from PySide6.QtWidgets import QWidget, QPushButton, QComboBox, QLineEdit, QFormLayout, QMainWindow
 from downloader import MediaDownloadInfo, MediaManager
 from .progress_window import ProgressWindow
 from downloader import is_mock_mode
@@ -9,12 +9,9 @@ class URLFormWindow(QWidget):
     self.urlLine = QLineEdit()
     self.fileType = QComboBox()
     self.fileType.addItems(['Video', 'Audio'])
-
     self.mediaInfo = MediaDownloadInfo()
-
     submit = QPushButton("Submit")
     submit.clicked.connect(self.submit)
-
     flo = QFormLayout()
     flo.addRow("Youtube URL", self.urlLine)
     flo.addRow("File Type", self.fileType)

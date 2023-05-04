@@ -4,6 +4,7 @@ import hashlib
 
 from database import make_session, get_user
 from database.models import *
+from threading import Thread
 
 # initialize the default download directory
 DOWNLOAD_DIRECTORY = os.path.join(os.path.expanduser('~'), "dank-downloader")
@@ -92,3 +93,19 @@ def add_media_to_db(media_info:dict, is_video:bool):
 
 def is_mock_mode():
     return ('MOCK_MODE' in os.environ)
+
+class DownloaderThread(Thread):
+    def __init__(self, stream, file_path):
+        print(f'Downloading to {file_path}')
+        Thread.__init__(self)
+        self.stream = stream
+        self.file_path = file_path
+        self.error = None
+
+    def run(self):
+        print("RUNNING")
+        try:
+            self.stream.download(filename=self.file_path)
+        except Exception as e:
+            self.error = e
+            print(e)

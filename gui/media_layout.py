@@ -4,7 +4,6 @@ from database import make_session
 from database.models import Media
 from .media_player import MediaPlayer
 
-
 class MediaTable(QScrollArea):
   def __init__(self, parent=None):
     super().__init__(parent)
