@@ -11,7 +11,6 @@ class MediaTable(QScrollArea):
     self.rows = None
     self.populateTable()
 
-
   def populateTable(self):
     widget = QWidget()
     widget.setLayout(QGridLayout())
@@ -24,13 +23,9 @@ class MediaTable(QScrollArea):
     for i in range(len(self.heading)):
       widget.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
 
-    for row in self.rows:
-      print(row)
-
     for i in range(len(self.rows)):
       button = QPushButton('Play')
       button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]))
-      print(self.rows[i][3])
 
       widget.layout().addWidget(button, i + 1, 0)
       for j in range(len(self.rows[i])):
@@ -45,11 +40,9 @@ class MediaTable(QScrollArea):
     self.mediaPlayer = MediaPlayer(mediaList)
     self.mediaPlayer.show()
 
-
   def getMediaFromDB(self):
     with make_session() as session:
       mediaList = session.query(Media).all()
-      print(mediaList)
       for media in mediaList:
         row = [
           [f'{media.title}', f'{media.subtitle}'],
@@ -77,7 +70,6 @@ class MediaLayout(QVBoxLayout):
     layout.addLayout(barLayout)
     layout.addWidget(self.mediaTable)
     self.addLayout(layout)
-
 
   def showDownloadWindow(self):
     self.dlWindow = MediaDownloadWindow()

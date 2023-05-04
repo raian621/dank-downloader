@@ -34,7 +34,6 @@ def get_user(session: Session) -> User:
 
     user = None
     result = session.query(User).where(User.username.is_(username))
-    print(result)
     if result.count() == 0:
         user = User(username)
         session.add(user)
@@ -44,7 +43,7 @@ def get_user(session: Session) -> User:
     return user
 
 
-def create_playlist(name: str, description: str, session: Session):
+def create_playlist(name: str, description: str, session: Session|None=None):
     """
     Creates a new playlist in the database.
     ---------------------------------------------------------------
@@ -54,11 +53,16 @@ def create_playlist(name: str, description: str, session: Session):
         description: the description of the playlist
         session: SQLAlchemy database session object
     """
-    
-    user = get_user(session)
-    playlist = Playlist(0, name, description, get_user(session))
-    user.playlists.append(playlist)
-    session.add(user)
+    playlist = None
+    if session:
+        user = get_user(session)
+        playlist = Playlist(0, name, description, get_user(session))
+        user.playlists.append(playlist)
+        session.add(user)
+        session.commit()
+    else:
+        with make_session() as _session:
+            playlist = create_playlist(name, description, _session)
 
     return playlist
 
@@ -82,7 +86,6 @@ def media_exists(
             Media.title==title,
             Media.subtitle==subtitle
         )
-        print("RESULT:", result)
         if (videodata and result.first()):
             result = result.where(
                 Media.videodata.fps==videodata.fps,

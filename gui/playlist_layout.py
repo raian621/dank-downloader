@@ -1,22 +1,76 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea, QGridLayout
+from .playlist_windows import *
+from database import make_session, Playlist
 
-class PlaylistListLayout(QVBoxLayout):
+class PlaylistTable(QScrollArea):
   def __init__(self, parent=None):
-    super().init()
+    super().__init__(parent)
+    self.rows = None
+    self.populateTable()
+
+  def populateTable(self):
+    widget = QWidget()
+    widget.setLayout(QGridLayout())
+    self.heading = ['TITLE', 'LENGTH', 'COUNT', 'OPTIONS']
+    
+    if self.rows == None:
+      self.rows = []
+      self.getPlaylistsFromDB()
+
+    for i in range(len(self.heading)):
+      widget.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
+
+    for i in range(len(self.rows)):
+      button = QPushButton('Open')
+      # button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]))
+      widget.layout().addWidget(button, i + 1, 0)
+      for j in range(len(self.rows[i])):
+        widget.layout().addWidget(QLabel(str(self.rows[i][j])), i + 1, j + 1)
+
+    self.setWidget(widget)
+
+
+  def getPlaylistsFromDB(self):
+    with make_session() as session:
+      playlistList = session.query(Playlist).all()
+      for playlist in playlistList:
+        row = [
+          f'{playlist.name}', # title
+          # f'{playlist.description[:10]}',
+          f"{playlist.playlength}",
+          len(playlist.media) if playlist.media else 0,
+          "options"
+        ]
+
+        self.rows.append(row)
   
 class PlaylistLayout(QVBoxLayout):
   def __init__(self, parent=None):
     super().__init__(parent)
 
     downloadButton = QPushButton("Download")
-    downloadButton.clicked.connect(lambda: showDownloadWindow(False))
+    downloadButton.clicked.connect(self.showDownloadWindow)
     addButton = QPushButton("Add")
+    addButton.clicked.connect(self.showAddWindow)
     label = QLabel("PLAYLISTS")
+    self.playlistTable = PlaylistTable()
     barLayout = QHBoxLayout()
     barLayout.addWidget(label)
     barLayout.addWidget(downloadButton)
     barLayout.addWidget(addButton)
-    self.addLayout(barLayout)
+    layout = QVBoxLayout()
+    layout.addLayout(barLayout)
+    layout.addWidget(self.playlistTable)
+    self.addLayout(layout)
 
-def showDownloadWindow(is_media:bool):
-  print("SHOW MEDIA DOWNLOAD BUTTON") if is_media else print("SHOW PLAYLIST DOWNLOAD BUTTON")
+  def showDownloadWindow(self):
+    self.dlWindow = PlaylistDownloadWindow()
+    self.dlWindow.repopulateTable = self.playlistTable.populateTable
+    self.dlWindow.rows = self.playlistTable.rows
+    self.dlWindow.show()
+
+  def showAddWindow(self):
+    self.dlWindow = PlaylistCreationWindow()
+    self.dlWindow.repopulateTable = self.playlistTable.populateTable
+    self.dlWindow.rows = self.playlistTable.rows
+    self.dlWindow.show()

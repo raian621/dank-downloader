@@ -1,14 +1,12 @@
 from .media_downloader import MediaDownloader
 from .util import DOWNLOAD_DIRECTORY, create_media_hash, add_media_to_db
 from database import make_session, get_user
-import os
 from .util import MOCK_MODE
 
 
 class MediaManager(MediaDownloader):
   def __init__(self, url):
     super().__init__(url)
-  
 
   def download_video(
       self,
@@ -48,7 +46,6 @@ class MediaManager(MediaDownloader):
     if result:
       print(add_media_to_db(result, is_video=True))
     return result
-
   
   def download_audio(
       self,
@@ -76,10 +73,8 @@ class MediaManager(MediaDownloader):
 
       if title == None: 
         title = self.yt.title
-
       result["title"] = title
       result["subtitle"] = subtitle
-
     if result:
       print(add_media_to_db(result, is_video=False))
     return result
