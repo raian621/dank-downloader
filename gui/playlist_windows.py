@@ -27,10 +27,8 @@ class PlaylistCreationWindow(QWidget):
       self.titleInput.text(),
       0,
       0,
-      'options'
     ])
 
-    print(title, description)
     self.repopulateTable()
     self.close()
 

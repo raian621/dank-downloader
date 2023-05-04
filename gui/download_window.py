@@ -21,7 +21,6 @@ class URLFormWindow(QWidget):
     flo.addRow(submit)
     self.setLayout(flo)
 
-
   def submit(self):
     self.url = self.urlLine.text()
     self.file_type = self.fileType.currentText()
@@ -129,7 +128,6 @@ class MediaDownloadWindow(QMainWindow):
       media_info["extension"],
       f'{media_info["playlength"]}',
       media_info["filepath"],
-      "options"
     ])
     
     self.progressWindow.close()

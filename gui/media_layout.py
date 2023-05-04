@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea
+from PySide6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea, QMenu
 from .download_window import MediaDownloadWindow
 from database import make_session
 from database.models import Media
@@ -28,11 +28,18 @@ class MediaTable(QScrollArea):
       button.clicked.connect(lambda: self.createMediaWindow([self.rows[i][3]]))
 
       widget.layout().addWidget(button, i + 1, 0)
-      for j in range(len(self.rows[i])):
+      n_variables = len(self.rows[i])
+      for j in range(n_variables):
         if j == 0:
           widget.layout().addWidget(QLabel(self.rows[i][j][0]), i + 1, j + 1)
         else:
           widget.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
+      self.contextMenu = QMenu()
+      self.contextMenu.addAction('Delete', lambda: print(f'Delete {self.rows[i][0][0]}'))
+      self.contextMenu.addAction('Add to Playlist', lambda: print('Add to Playlist'))
+      contextButton = QPushButton('Options')
+      contextButton.setMenu(self.contextMenu)
+      widget.layout().addWidget(contextButton, i + 1, n_variables + 1)
 
     self.setWidget(widget)
 
@@ -49,7 +56,6 @@ class MediaTable(QScrollArea):
           media.extension,
           f"{media.playlength}",
           media.filepath,
-          "options"
         ]
 
         self.rows.append(row)
