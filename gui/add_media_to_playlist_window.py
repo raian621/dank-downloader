@@ -30,12 +30,10 @@ class PlaylistSelectorTable(QScrollArea):
     self.setWidget(widget)
 
   def getSelectedPlaylists(self):
-    selectedPlaylistIDs = []
-    print(self.checkboxes)
+    self.selectedPlaylistIDs = []
     for i in range(len(self.checkboxes)):
       if self.checkboxes[i].isChecked():
-        print(i)
-        selectedPlaylistIDs.append(self.playlistIDs[i])
+        self.selectedPlaylistIDs.append(self.playlistIDs[i])
 
 class AddMediaToPlaylistWindow(QWidget):
   def __init__(self, mediaID, parent=None):
@@ -52,8 +50,8 @@ class AddMediaToPlaylistWindow(QWidget):
     self.playlistSelectorTable.getSelectedPlaylists()
     if self.playlistSelectorTable == None or self.playlistSelectorTable.playlistIDs == None:
       return
-    selectedPlaylistIDs = self.playlistSelectorTable.playlistIDs
-    print(selectedPlaylistIDs)
+    selectedPlaylistIDs = self.playlistSelectorTable.selectedPlaylistIDs
+    print('SELECTED IDS:', selectedPlaylistIDs)
 
     for pid in selectedPlaylistIDs:
       add_media_to_playlist(self.mediaID, pid)

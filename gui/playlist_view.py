@@ -9,7 +9,6 @@ class PlaylistView(QWidget):
     super().__init__(parent)
     vlayout = QVBoxLayout(self)
     hlayout = QHBoxLayout()
-    print('TITLE', title)
     goBackButton = QPushButton('Go Back')
     goBackButton.clicked.connect(goBack)
     hlayout.addWidget(goBackButton)
@@ -17,7 +16,7 @@ class PlaylistView(QWidget):
     description = None
     vlayout.addLayout(hlayout)
     with make_session() as session:
-      playlist = session.query(Playlist).first()
+      playlist = session.query(Playlist).where(Playlist.name==title).first()
       if playlist:
         description = playlist.description
         self.playlistID = playlist.id

@@ -20,7 +20,6 @@ class MediaTable(QScrollArea):
     
     if self.rows == None:
       self.rows = []
-      print('populateTable() PLAYLIST ID:', playlistID)
       self.getMediaFromDB(playlistID)
 
     for i in range(len(self.heading)):
@@ -60,8 +59,7 @@ class MediaTable(QScrollArea):
     self.mediaPlayer.show()
 
   def getMediaFromDB(self, playlistID=None):
-    print('getMediaFromDB() PLAYLIST ID:', playlistID)
-    with make_session() as session:   
+    with make_session() as session:
       mediaList = None
       if playlistID:
         mediaList = session.query(Playlist).where(Playlist.id==playlistID).first().media
