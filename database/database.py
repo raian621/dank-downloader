@@ -121,11 +121,13 @@ def remove_media_from_playlist(mediaID, playlistID):
 def delete_media(mediaID):
   with make_session() as session:
     media = session.query(Media).where(Media.id==mediaID).first()
-    session.delete(media)
+    if media:
+      session.delete(media)
     session.commit()
 
 def delete_playlist(playlistID):
   with make_session() as session:
-    playlist = session.query(Playlist).where(Media.id==playlistID).first()
-    session.delete(playlist)
+    playlist = session.query(Playlist).where(Playlist.id==playlistID).first()
+    if playlist:
+      session.delete(playlist)
     session.commit()

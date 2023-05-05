@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea, QMenu
 from .download_window import MediaDownloadWindow
-from database import make_session
+from database import make_session, remove_media_from_playlist, delete_media
 from database.models import Media, Playlist
 from .media_player import MediaPlayer
 from .add_media_to_playlist_window import AddMediaToPlaylistWindow
@@ -11,6 +11,7 @@ class MediaTable(QScrollArea):
     self.rows = None
     self.contextMenus = []
     self.mediaIDs = []
+    self.playlistID = playlistID
     self.populateTable(playlistID)
 
   def populateTable(self, playlistID=None):
@@ -40,13 +41,16 @@ class MediaTable(QScrollArea):
           widget.layout().addWidget(QLabel(self.rows[i][j]), i + 1, j + 1)
       contextMenu = QMenu()
       self.contextMenus.append(contextMenu)
-      contextMenu.addAction('Delete', lambda toDelete=self.rows[i][0][0]: print(f'Delete {toDelete}'))
       if i == len(self.mediaIDs):
         mediaID = 0
         with make_session() as session:
           media = session.query(Media).where(Media.title==self.rows[i][0][0]).first()
           mediaID = media.id
         self.mediaIDs.append(mediaID)
+      if playlistID:
+        contextMenu.addAction('Delete', lambda mediaID=self.mediaIDs[i]: self.deleteMedia(mediaID, playlistID))
+      else:
+        contextMenu.addAction('Delete', lambda mediaID=self.mediaIDs[i]: self.deleteMedia(mediaID))
       contextMenu.addAction('Add to Playlist', lambda _='', id=self.mediaIDs[i]: self.showAddMediaToPlaylistWindow(id))
       contextButton = QPushButton('Options')
       contextButton.setMenu(contextMenu)
@@ -80,6 +84,14 @@ class MediaTable(QScrollArea):
   def showAddMediaToPlaylistWindow(self, mediaID):
     self.ampWindow = AddMediaToPlaylistWindow(mediaID)
     self.ampWindow.show()
+
+  def deleteMedia(self, mediaID, playlistID=None):
+    self.rows = None
+    if playlistID:
+      remove_media_from_playlist(mediaID, playlistID)
+    else:
+      delete_media(mediaID)
+    self.populateTable(self.playlistID)
 
 
 class MediaLayout(QVBoxLayout):

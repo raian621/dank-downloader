@@ -51,7 +51,6 @@ class AddMediaToPlaylistWindow(QWidget):
     if self.playlistSelectorTable == None or self.playlistSelectorTable.playlistIDs == None:
       return
     selectedPlaylistIDs = self.playlistSelectorTable.selectedPlaylistIDs
-    print('SELECTED IDS:', selectedPlaylistIDs)
 
     for pid in selectedPlaylistIDs:
       add_media_to_playlist(self.mediaID, pid)

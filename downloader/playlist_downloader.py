@@ -13,7 +13,6 @@ class PlaylistDownloader:
     if PlaylistDownloader.valid_config(config):
       self.config = config
 
-    
   def valid_config(config):
     print("Checking config")
     required_fields = [
