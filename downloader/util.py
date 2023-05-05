@@ -72,17 +72,22 @@ def add_media_to_db(media_info:dict, is_video:bool):
 
         user = get_user(session)
         media = Media(
-            media_info["playlength"],
-            media_info["extension"],
-            media_info["url"],
-            media_info["filepath"],
-            media_info["title"],
-            media_info["subtitle"],
-            user
+            playlength=media_info["playlength"],
+            extension=media_info["extension"],
+            url=media_info["url"],
+            filepath=media_info["filepath"],
+            title=media_info["title"],
+            subtitle=media_info["subtitle"],
+            user=user,
+            user_id=user.id
         )
         
         if is_video:
-            media.videodata = VideoData(media_info["resolution"], media_info["fps"], media)
+            media.videodata = VideoData(
+                resolution=media_info["resolution"], 
+                fps=media_info["fps"],
+                media=media
+            )
         media.media_hash = media_hash
 
         user.media.append(media)
@@ -103,7 +108,6 @@ class DownloaderThread(Thread):
         self.error = None
 
     def run(self):
-        print("RUNNING")
         try:
             self.stream.download(filename=self.file_path)
         except Exception as e:

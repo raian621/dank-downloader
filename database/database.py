@@ -31,7 +31,7 @@ def get_user(session: Session) -> User:
   user = None
   result = session.query(User).where(User.username.is_(username))
   if result.count() == 0:
-    user = User(username)
+    user = User(username=username)
     session.add(user)
   else:
     user = result.first() 
@@ -51,7 +51,13 @@ def create_playlist(name: str, description: str, session: Session|None=None):
   playlist = None
   if session:
     user = get_user(session)
-    playlist = Playlist(0, name, description, get_user(session))
+    playlist = Playlist(
+      playlength=0, 
+      name=name, 
+      description=description, 
+      user=user,
+      user_id=user.id
+    )
     user.playlists.append(playlist)
     session.add(user)
     session.commit()
@@ -90,3 +96,36 @@ def media_exists(
       media_exists = True
 
   return media_exists
+
+def add_media_to_playlist(mediaID, playlistID):
+  with make_session() as session:
+    playlist = session.query(Playlist).where(Playlist.id==playlistID).first()
+    media = session.query(Media).where(Media.id==mediaID).first()
+    if playlist == None or media == None:
+      return
+    if playlist.media:
+      playlist.media.append(media)
+    else:
+      playlist.media = [media]
+    session.commit()
+
+def remove_media_from_playlist(mediaID, playlistID):
+  with make_session() as session:
+    playlist = session.query(Playlist).where(Playlist.id==playlistID).first()
+    media = session.query(Media).where(Media.id==mediaID).first()
+    if playlist == None or media == None:
+      return
+    playlist.media.remove(media)
+    session.commit()
+
+def delete_media(mediaID):
+  with make_session() as session:
+    media = session.query(Media).where(Media.id==mediaID).first()
+    session.delete(media)
+    session.commit()
+
+def delete_playlist(playlistID):
+  with make_session() as session:
+    playlist = session.query(Playlist).where(Media.id==playlistID).first()
+    session.delete(playlist)
+    session.commit()

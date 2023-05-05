@@ -5,6 +5,7 @@ from .media_layout import MediaLayout
 from .playlist_view import PlaylistView
 from downloader import is_mock_mode
 from .error_window import ErrorWindow
+import traceback
 
 class MediaView(QWidget):
   def __init__(self, parent=None, showPlaylistView=None):
@@ -42,10 +43,15 @@ class MainWindow(QMainWindow):
     self.playlistView = PlaylistView(title=title, goBack=self.showMediaView)
     self.setCentralWidget(self.playlistView)
 
-  def showErrorWindow(self, exc_type, exc_value):
-    self.errorWindow = ErrorWindow(None, str(exc_value), str(exc_type))
+  def showErrorWindow(self, _type, value, _traceback):
+    value = str(value) + '\n'
+    # for tb in traceback.format_exception(_type, value, _traceback):
+    #   value += tb
+    print(value)
+    self.errorWindow = ErrorWindow(None, value, str(_type))
     self.errorWindow.show()
+    print('error window closed')
 
 
   def excepthook(self, exc_type, exc_value, exc_tb):
-    self.showErrorWindow(exc_type, exc_value)
+    self.showErrorWindow(exc_type, exc_value, exc_tb)

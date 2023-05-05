@@ -25,7 +25,7 @@ class PlaylistTable(QScrollArea):
     for i in range(len(self.rows)):
       button = QPushButton('Open')
       name = self.rows[i][0]
-      button.clicked.connect(lambda _='', playlistName=f'{name}': self.showPlaylistView(playlistName))
+      button.clicked.connect(lambda _='', playlistName=name: self.showPlaylistView(playlistName))
       print("A", self.rows[i][0])
       widget.layout().addWidget(button, i + 1, 0)
       n_variables = len(self.rows[i])

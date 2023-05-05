@@ -1,24 +1,27 @@
 from PySide6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QScrollArea, QMenu
 from .download_window import MediaDownloadWindow
 from database import make_session
-from database.models import Media
+from database.models import Media, Playlist
 from .media_player import MediaPlayer
+from .add_media_to_playlist_window import AddMediaToPlaylistWindow
 
 class MediaTable(QScrollArea):
-  def __init__(self, parent=None):
+  def __init__(self, playlistID=None, parent=None):
     super().__init__(parent)
     self.rows = None
     self.contextMenus = []
-    self.populateTable()
+    self.mediaIDs = []
+    self.populateTable(playlistID)
 
-  def populateTable(self):
+  def populateTable(self, playlistID=None):
     widget = QWidget()
     widget.setLayout(QGridLayout())
     self.heading = ['TITLE', 'FORMAT', 'LENGTH', 'LOCATION', 'OPTIONS']
     
     if self.rows == None:
       self.rows = []
-      self.getMediaFromDB()
+      print('populateTable() PLAYLIST ID:', playlistID)
+      self.getMediaFromDB(playlistID)
 
     for i in range(len(self.heading)):
       widget.layout().addWidget(QLabel(self.heading[i]), 0, i + 1)
@@ -39,8 +42,13 @@ class MediaTable(QScrollArea):
       contextMenu = QMenu()
       self.contextMenus.append(contextMenu)
       contextMenu.addAction('Delete', lambda toDelete=self.rows[i][0][0]: print(f'Delete {toDelete}'))
-      print(self.rows[i][0][0])
-      contextMenu.addAction('Add to Playlist', lambda: print('Add to Playlist'))
+      if i == len(self.mediaIDs):
+        mediaID = 0
+        with make_session() as session:
+          media = session.query(Media).where(Media.title==self.rows[i][0][0]).first()
+          mediaID = media.id
+        self.mediaIDs.append(mediaID)
+      contextMenu.addAction('Add to Playlist', lambda _='', id=self.mediaIDs[i]: self.showAddMediaToPlaylistWindow(id))
       contextButton = QPushButton('Options')
       contextButton.setMenu(contextMenu)
       widget.layout().addWidget(contextButton, i + 1, n_variables + 1)
@@ -51,9 +59,16 @@ class MediaTable(QScrollArea):
     self.mediaPlayer = MediaPlayer(mediaList)
     self.mediaPlayer.show()
 
-  def getMediaFromDB(self):
-    with make_session() as session:
-      mediaList = session.query(Media).all()
+  def getMediaFromDB(self, playlistID=None):
+    print('getMediaFromDB() PLAYLIST ID:', playlistID)
+    with make_session() as session:   
+      mediaList = None
+      if playlistID:
+        mediaList = session.query(Playlist).where(Playlist.id==playlistID).first().media
+      else:   
+        mediaList = session.query(Media).all()
+      if mediaList == None:
+        mediaList = []
       for media in mediaList:
         row = [
           [f'{media.title}', f'{media.subtitle}'],
@@ -61,7 +76,12 @@ class MediaTable(QScrollArea):
           f"{media.playlength}",
           media.filepath,
         ]
+        self.mediaIDs.append(media.id)
         self.rows.append(row)
+
+  def showAddMediaToPlaylistWindow(self, mediaID):
+    self.ampWindow = AddMediaToPlaylistWindow(mediaID)
+    self.ampWindow.show()
 
 
 class MediaLayout(QVBoxLayout):
